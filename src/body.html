@@ -1,0 +1,157 @@
+<div id="app">
+  <canvas id="cv" tabindex="0" aria-label="Zona de juego"></canvas>
+
+  <div id="hud" hidden>
+    <div id="hud-attempt">Intento 1</div>
+    <div class="hud-mid"><div class="hud-bar"><i id="hud-fill"></i></div><b id="hud-pct">0%</b></div>
+    <div class="hud-btns">
+      <span id="hud-flag" hidden>Física modificada</span>
+      <button data-act="restart" title="Reiniciar (R)" aria-label="Reiniciar">&#8635;</button>
+      <button data-act="pause" title="Pausa (Esc)" aria-label="Pausa">&#10074;&#10074;</button>
+    </div>
+  </div>
+
+  <section class="screen" id="s-menu">
+    <button id="menu-user" class="user" data-act="go-profile" aria-label="Perfil del jugador"></button>
+    <h1>GEOMETRY DASH<em>WEB</em></h1>
+    <div class="menu-btns">
+      <button class="go" data-act="go-levels">Jugar</button>
+      <button data-act="go-editor">Editor</button>
+      <button data-act="go-icons">Cubos</button>
+      <button data-act="go-settings">Ajustes</button>
+    </div>
+    <p class="foot">Reimplementación fan con gráficos y música originales. Salto: Espacio, flecha arriba, clic o toque. Pausa: Esc. Reiniciar: R.</p>
+  </section>
+
+  <section class="screen" id="s-levels" hidden>
+    <div class="topbar"><button data-act="go-menu">&larr; Menú</button><h2>Niveles</h2></div>
+    <div class="panel">
+      <p id="lv-user" class="hint"></p>
+      <div id="lv-list" style="display:flex;flex-direction:column;gap:12px"></div>
+      <div class="row-btns"><button data-act="import-level">Importar JSON</button><button data-act="new-level">Nuevo en el editor</button></div>
+    </div>
+  </section>
+
+  <section class="screen" id="s-icons" hidden>
+    <div class="topbar"><button data-act="go-menu">&larr; Menú</button><h2>Cubos y colores</h2></div>
+    <div class="panel">
+      <div class="previews">
+        <figure><canvas id="pv-cube" width="96" height="96"></canvas><figcaption>Cubo</figcaption></figure>
+        <figure><canvas id="pv-ship" width="96" height="96"></canvas><figcaption>Nave</figcaption></figure>
+        <figure><canvas id="pv-ufo" width="96" height="96"></canvas><figcaption>UFO</figcaption></figure>
+        <figure><canvas id="pv-wave" width="96" height="96"></canvas><figcaption>Wave</figcaption></figure>
+        <figure><canvas id="pv-ball" width="96" height="96"></canvas><figcaption>Ball</figcaption></figure>
+        <figure><canvas id="pv-spider" width="96" height="96"></canvas><figcaption>Spider</figcaption></figure>
+      </div>
+      <div class="lab">Diseño del cubo</div><div id="icon-shapes"></div>
+      <div id="icon-variants"></div>
+      <div class="colorrow"><span class="lab">Color primario</span><div id="sw-c1" class="swatches"></div><input type="color" class="pick" data-key="c1" id="pk-c1" aria-label="Elegir color primario"><input type="text" class="hex" data-key="c1" id="hx-c1" maxlength="7" spellcheck="false" aria-label="Color primario en HEX"></div>
+      <div class="colorrow"><span class="lab">Color secundario</span><div id="sw-c2" class="swatches"></div><input type="color" class="pick" data-key="c2" id="pk-c2" aria-label="Elegir color secundario"><input type="text" class="hex" data-key="c2" id="hx-c2" maxlength="7" spellcheck="false" aria-label="Color secundario en HEX"></div>
+      <div class="colorrow"><span class="lab">Color de efectos</span><div id="sw-fx" class="swatches"></div><input type="color" class="pick" data-key="fx" id="pk-fx" aria-label="Elegir color de efectos"><input type="text" class="hex" data-key="fx" id="hx-fx" maxlength="7" spellcheck="false" aria-label="Color de efectos en HEX"></div>
+      <p class="hint">Los efectos son el fuego y las estelas. Los tres colores se aplican a cubo, nave, UFO, wave, ball y spider.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="s-profile" hidden>
+    <div class="topbar"><button data-act="go-menu">&larr; Menú</button><h2>Perfil</h2></div>
+    <div class="panel">
+      <label class="stack">Nombre de jugador<input type="text" id="pf-name" maxlength="16" autocomplete="off" spellcheck="false"></label>
+      <p class="err" id="pf-err"></p>
+      <div class="row-btns"><button class="go" data-act="save-profile">Guardar nombre</button></div>
+      <div class="stats" id="pf-stats"></div>
+      <h2 class="sub">Mejor porcentaje por nivel</h2>
+      <div class="list" id="pf-levels"></div>
+      <p class="hint">El perfil se guarda solo en este navegador. No es una cuenta global.</p>
+    </div>
+  </section>
+
+  <section class="screen" id="s-settings" hidden>
+    <div class="topbar"><button data-act="go-menu">&larr; Menú</button><h2>Ajustes</h2></div>
+    <div class="panel">
+      <label>Música <input type="range" id="set-music" min="0" max="1" step="0.05"></label>
+      <label>Efectos <input type="range" id="set-sfx" min="0" max="1" step="0.05"></label>
+      <label><input type="checkbox" id="set-particles"> Partículas</label>
+      <label><input type="checkbox" id="set-auto"> Reintentar automáticamente al morir</label>
+      <label><input type="checkbox" id="set-decor"> Decoración y fondos animados</label>
+      <label><input type="checkbox" id="set-hitboxes"> Mostrar hitboxes</label>
+      <details>
+        <summary>Calibración de la física</summary>
+        <p class="hint">Los valores se aplican a todos los modos. Con la física modificada no se guardan récords.</p>
+        <div id="phys-list"></div>
+        <p class="note" id="phys-note" hidden>Física modificada: los récords no se guardan.</p>
+        <div class="row-btns"><button data-act="reset-phys">Restablecer física</button></div>
+      </details>
+      <div class="row-btns"><button class="danger" data-act="reset-all">Borrar todos los datos</button></div>
+    </div>
+  </section>
+
+  <section class="screen overlay" id="s-pause" hidden>
+    <h2>Pausa</h2>
+    <div class="menu-btns">
+      <button class="go" data-act="resume">Continuar</button>
+      <button data-act="pause-restart">Reiniciar</button>
+      <button id="pause-quit" data-act="quit">Salir</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-death" hidden>
+    <div id="death-pct">0%</div>
+    <div id="death-info"></div>
+    <div class="row-btns"><button class="go" data-act="retry">Reintentar</button><button data-act="quit">Salir</button></div>
+  </section>
+
+  <section class="screen overlay" id="s-win" hidden>
+    <h1>NIVEL<em>COMPLETADO</em></h1>
+    <div class="stats" id="win-stats"></div>
+    <div class="menu-btns">
+      <button class="go" data-act="retry">Jugar de nuevo</button>
+      <button id="win-quit" data-act="quit">Niveles</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-editor" hidden>
+    <div class="ed-top">
+      <button data-act="ed-menu">&larr; Menú</button>
+      <input type="text" id="ed-name" maxlength="40" aria-label="Nombre del nivel">
+      <span class="sep"></span>
+      <button data-tool="select" title="Seleccionar (V)">Seleccionar</button>
+      <button data-tool="place" title="Colocar (B)">Colocar</button>
+      <button data-tool="erase" title="Borrar (E)">Borrar</button>
+      <button data-tool="pan" title="Desplazar (H o Espacio)">Mover vista</button>
+      <span class="sep"></span>
+      <button id="ed-undo" title="Deshacer (Ctrl+Z)">Deshacer</button>
+      <button id="ed-redo" title="Rehacer (Ctrl+Y)">Rehacer</button>
+      <button id="ed-snap" title="Cambiar rejilla (G)">Rejilla 1</button>
+      <button id="ed-zoomout" aria-label="Alejar">&minus;</button>
+      <button id="ed-zoomin" aria-label="Acercar">+</button>
+      <span class="sep"></span>
+      <button id="ed-test" class="go" title="Probar (P)">Probar &#9654;</button>
+      <button id="ed-save">Guardar</button>
+      <button id="ed-load">Cargar</button>
+      <button id="ed-new">Nuevo</button>
+      <button id="ed-export">Exportar</button>
+      <button id="ed-import">Importar</button>
+    </div>
+    <div id="ed-pal"></div>
+    <aside id="ed-props">
+      <h3>Nivel</h3>
+      <label>Dificultad <select id="ed-diff"><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option><option value="harder">Harder</option><option value="insane">Insane</option><option value="demon">Demon</option></select></label>
+      <p id="ed-suggest" class="hint"></p>
+      <label>Descripción <textarea id="ed-desc" rows="2" maxlength="200" placeholder="Breve descripción"></textarea></label>
+      <label>Modo inicial <select id="ed-mode"><option value="cube">Cubo</option><option value="ship">Nave</option><option value="ufo">UFO</option><option value="wave">Wave</option><option value="ball">Ball</option><option value="spider">Spider</option></select></label>
+      <label>Velocidad <select id="ed-speed"><option value="slow">0.8x</option><option value="normal">1x</option><option value="fast">1.24x</option><option value="faster">1.5x</option></select></label>
+      <label>Decoración <select id="ed-style"><option value="classic">Clásico</option><option value="stars">Espacio</option><option value="circuit">Circuito</option><option value="arcs">Arcos</option><option value="aurora">Aurora</option><option value="grid">Retro</option></select></label>
+      <label>Color de fondo <input type="range" id="ed-hue" min="0" max="360" step="1"></label>
+      <details id="ed-col-box"><summary>Colores iniciales (canales)</summary><div id="ed-colors"></div></details>
+      <h3>Selección</h3>
+      <div id="ed-sel"></div>
+    </aside>
+    <div class="ed-bar">
+      <span id="ed-pos">x 0  y 0</span><span id="ed-count"></span><span id="ed-status"></span>
+      <span class="keys">V selecciona · B coloca · E borra · R rota · Ctrl+D duplica · Supr elimina · rueda = zoom · Mayús+rueda = desplazar · Espacio+arrastre = mover vista</span>
+    </div>
+  </section>
+
+  <div id="modal" hidden><div id="modal-box"></div></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>

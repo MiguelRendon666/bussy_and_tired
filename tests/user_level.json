@@ -1,0 +1,3 @@
+{"format":1,"id":"umwgmsopt7i","name":"Mi demo 5 modos","mode":"cube","hue":215,"diff":"hard","desc":"Prueba de todos los modos","speed":"normal","style":"stars","objs":[
+["start",0,0,0],["spike",14,0,0],["portal_ufo",24,0,0],["portal_ufo",24,3,0],["portal_ufo",24,6,0],["block",44,0,0],["block",45,0,0],["block",44,1,0],["block",45,1,0],["block",44,2,0],["block",45,2,0],["spike2",60,0,0],["portal_wave",76,0,0],["portal_wave",76,3,0],["portal_wave",76,6,0],["spike3",96,0,0],["spike3",110,8,180],["portal_ball",126,0,0],["portal_ball",126,3,0],["portal_ball",126,6,0],["spike",146,0,0],["spike",160,8,180],["portal_cube",176,0,0],["portal_cube",176,3,0],["portal_cube",176,6,0],["spike",192,0,0],["end",210,0,0],["deco_star",10,6,0],["deco_tower",30,0,0],["deco_beam",90,0,0]
+]}
