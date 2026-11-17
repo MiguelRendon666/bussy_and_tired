@@ -15,7 +15,7 @@ function plan(raw) {
       if (!ok) continue;
       const sv = sim.save(), node = { s: sv, held, prev: st };
       if (sim.finished) { const out = []; for (let n = node; n.prev; n = n.prev) out.push(n.held ? 1 : 0); return out.reverse(); }
-      const key = [sv.m, Math.round(sv.y / 4), Math.round(sv.vy / 25), sv.g, sv.d, sv.ph, Math.round(sv.bf * 20)].join('|');
+      const key = [sv.m, Math.round(sv.y / 4), Math.round(sv.vy / 25), sv.g, sv.d, sv.ph, Math.round(sv.bf * 20), sv.gs, sv.u ? sv.u.size : 0].join('|');
       if (!next.has(key)) next.set(key, node);
     }
     states = [...next.values()];
@@ -31,6 +31,7 @@ out['flip-circuit'] = plan(L.OfficialLevels.ball());
 out['abyss-protocol'] = plan(L.OfficialLevels.demon());
 out['changes-after-all'] = plan(L.OfficialLevels.changes());
 out['witzy-witzy-spider'] = plan(L.OfficialLevels.spider());
+out['gravity-rush'] = plan(L.OfficialLevels.gravity());
 require('fs').writeFileSync(__dirname + '/plans.json', JSON.stringify(out));
 for (const k of Object.keys(out)) console.log(k, out[k] ? out[k].length + ' decisiones' : 'SIN SOLUCIÓN');
 

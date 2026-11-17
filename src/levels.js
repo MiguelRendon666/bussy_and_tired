@@ -5,6 +5,20 @@
    Unidades: bloques. Fila 0 = suelo, filas 0-8 = zona de modo especial (techo en 9).
    ============================================================ */
 const LevelKit = {
+  /* Reglas de diseño medidas con el motor a velocidad 1x (jumpinfo.js, chainsearch.js).
+     "Ventana" = margen de tiempo que tiene el jugador para pulsar; humano cómodo >= 150 ms. */
+  JUMP: {
+    cubeHeight: 2.13, cubeLength: 4.0,          // un salto desde el suelo
+    carpetMax: 3,                                // pinchos seguidos con un solo salto (ventana 125 ms; con 2: 221 ms)
+    orbCarpet: {                                 // pinchos seguidos con UN orbe en el aire y dónde ponerlo (celda desde el 1.er pincho)
+      yellow: { max: 5, off: (n) => n - 4 },     // 5 -> 233 ms, 6 -> 167 ms (7 -> 67 ms: no)
+      pink: { max: 4, off: (n) => n - 3 },       // 4 -> 258 ms, 5 -> 167 ms
+      red: { max: 6, off: (n) => n - 5 },        // 6 -> 233 ms, 7 -> 167 ms (8 -> 67 ms: no)
+    },
+    padLanding: { pink: 2.45, yellow: 4.27, red: 5.5 },  // dónde aterriza el cubo desde la celda del pad
+    minGap: 8,                                   // bloques libres entre dos obstáculos que exigen salto
+    flipFlight: 4,                               // bloques que tarda el cubo en cruzar de suelo a techo tras invertir la gravedad
+  },
   make() {
     const o = [];
     let seed = 7;
@@ -407,6 +421,116 @@ OfficialLevels.spider = function () {
   o.push(['end', endX, 0, 0]);
   k.scatter(4, endX, [['deco_star', 10, 1, 8], ['deco_cluster', 30, 2, 6], ['deco_orb', 40, 2, 6], ['deco_arc', 46, 3, 7], ['deco_float', 16, 1, 8], ['deco_chevrons', 36, 1, 8]]);
   return { format: 1, id: 'witzy-witzy-spider', name: 'Witzy witzy spider', mode: 'cube', hue: 285, style: 'stars', diff: 'easy', speed: 'normal', desc: 'Largo y tranquilo: pasa por todos los vehículos y termina trepando como una spider.', objs: o };
+};
+
+
+/* ---------- Nivel 8: Gravity rush (portales de gravedad, orbes y pads), rehecho con las reglas de LevelKit.JUMP ---------- */
+OfficialLevels.gravity = function (stop) {
+  const FxU = typeof FxUtil !== 'undefined' ? FxUtil : require('./core.js').FxUtil;
+  const k = LevelKit.make(), { o, S, S2, S3, gate } = k, J = LevelKit.JUMP;
+  const hex = (h, s = 100, l = 50) => FxU.hslToHex([h, s, l]);
+  const T = (type, x, y, props) => o.push([type, x, y, 0, props]);
+  const C = (x, y = 8) => o.push(['spike', x, y, 180]);
+  const blk = (type, x, y, w, h) => { for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) o.push([type, x + i, y + j, 0]); };
+  const grav = (up, x) => { for (let y = 0; y < 9; y += 3) o.push([up ? 'portal_grav_up' : 'portal_grav_down', x, y, 0]); };
+  /* Alfombra de n pinchos que se cruza con un orbe a mitad del salto (n <= J.orbCarpet[color].max) */
+  const orbCarpet = (x, n, color) => {
+    for (let i = 0; i < n; i++) S(x + i);
+    o.push(['orb_' + color, x + J.orbCarpet[color].off(n), 2, 0]);
+    return x + n;
+  };
+  const paint = (x, hue, d = 1.2) => {
+    T('trig_color', x, 12, { t: 'bg', c: hex(hue, 85, 40), d });
+    T('trig_color', x, 13, { t: 'ground', c: hex(hue, 70, 30), d });
+    T('trig_color', x, 14, { t: 'line', c: hex(hue, 100, 66), d });
+    T('trig_color', x, 15, { t: 'obj', c: hex((hue + 25) % 360, 100, 62), d });
+  };
+  o.push(['start', 0, 0, 0]);
+  let x = 28;
+  const sections = [
+    /* 1. Pads: el cubo sale disparado sin pulsar; los pinchos quedan bajo el arco */
+    () => {
+      o.push(['pad_yellow', x, 0, 0]); S2(x + 1); x += Math.ceil(J.padLanding.yellow) + J.minGap;
+      o.push(['pad_pink', x, 0, 0]); S(x + 1); x += Math.ceil(J.padLanding.pink) + J.minGap;
+      o.push(['pad_red', x, 0, 0]); blk('block_tech', x + 5, 0, 3, 3); S(x + 9); x += 9 + J.minGap;
+      paint(x - 4, 175);
+    },
+    /* 2. Orbes: un orbe a mitad del salto sobre una alfombra de pinchos (tamaños dentro de J.orbCarpet) */
+    () => {
+      x = orbCarpet(x + 3, 5, 'yellow') + J.minGap + 4;
+      x = orbCarpet(x, 4, 'pink') + J.minGap + 4;
+      x = orbCarpet(x, 6, 'red') + J.minGap + 4;
+      blk('block_glow', x, 0, 3, 2); S(x + 7); x += 7 + J.minGap;
+    },
+    /* 3. Gravedad invertida en cubo: el techo es el suelo; pinchos sueltos colgando */
+    () => {
+      paint(x - 4, 45);
+      grav(true, x); x += 2 + J.flipFlight + 4;
+      C(x); x += 4 + J.minGap;
+      C(x); C(x + 1); x += 2 + J.minGap;
+      blk('block_stripes', x, 8, 3, 1); C(x + 6); x += 6 + J.minGap;
+      grav(false, x); x += 2 + J.flipFlight + 4;
+    },
+    /* 4. Orbes verde y azul y pad azul: cambian la gravedad en pleno vuelo, sin pinchos bajo el arco */
+    () => {
+      S(x); x += 1 + J.minGap;
+      o.push(['orb_green', x, 2, 0]); x += 2 + J.flipFlight + 6;
+      C(x); C(x + 1); x += 2 + J.minGap;
+      o.push(['orb_blue', x, 6, 0]); x += 2 + J.flipFlight + 6;
+      paint(x - 4, 320);
+      S2(x); x += 2 + J.minGap;
+      o.push(['pad_blue', x, 0, 0]); x += 2 + J.flipFlight + 6;
+      C(x); x += 1 + J.minGap;
+      grav(false, x); x += 2 + J.flipFlight + 6;
+    },
+    /* 5. Nave con gravedad cambiante: pasillo de 7 de alto, los controles se invierten al cruzar el portal */
+    () => {
+      k.portal('ship', x); x += 8;
+      x = k.corridor(x, [[0, 4], [10, 4], [18, 5.5], [30, 5.5]], 7) + 2;
+      grav(true, x); x += 4;
+      x = k.corridor(x, [[0, 5.5], [10, 5.5], [18, 3.5], [30, 3.5]], 7) + 2;
+      grav(false, x); x += 4;
+      x = k.corridor(x, [[0, 3.5], [8, 3.5], [16, 5], [28, 5]], 7) + 8;
+    },
+    /* 6. UFO con portal de gravedad */
+    () => {
+      paint(x - 4, 210);
+      k.portal('ufo', x); x += 16;
+      for (const [lo, hi] of [[1, 8], [2, 9], [0, 7]]) { gate(x, lo, hi); x += 14; }
+      grav(true, x); x += 14;
+      for (const [lo, hi] of [[1, 8], [0, 7], [2, 9]]) { gate(x, lo, hi); x += 14; }
+      grav(false, x); x += 12;
+    },
+    /* 7. Ball con portales de gravedad */
+    () => {
+      k.portal('ball', x); x += 14;
+      S(x); C(x + 14); x += 28;
+      grav(true, x); x += 14;
+      C(x); S(x + 14); x += 28;
+      grav(false, x); x += 14;
+      S(x); x += 16;
+    },
+    /* 8. Final: alfombras largas con orbe, una tras otra, y cierre con pad */
+    () => {
+      paint(x - 6, 15);
+      k.portal('cube', x); x += 14;
+      o.push(['pad_yellow', x, 0, 0]); S2(x + 1); x += Math.ceil(J.padLanding.yellow) + J.minGap;
+      x = orbCarpet(x, 5, 'yellow') + J.minGap + 4;
+      x = orbCarpet(x, 6, 'yellow') + J.minGap + 4;
+      blk('block_crystal', x, 0, 3, 1); S(x + 8); x += 8 + J.minGap;
+    },
+  ];
+  const last = stop === undefined ? sections.length : stop;
+  for (let i = 0; i < last; i++) sections[i]();
+  x += 10;
+  const endX = x;
+  o.push(['end', endX, 0, 0]);
+  /* Decoración: animada, estática y bloques decorativos opacos y transparentes */
+  k.scatter(6, endX, [['adeco_gear', 40, 3, 7], ['adeco_pulse', 46, 2, 6], ['adeco_arrows', 34, 1, 8], ['adeco_spark', 30, 2, 7], ['adeco_wave', 52, 1, 8], ['adeco_eq', 44, 0, 1], ['adeco_orbit', 56, 2, 6],
+    ['sdeco_crystal', 40, 0, 1], ['sdeco_skyline', 60, 0, 1], ['sdeco_pillar', 64, 0, 1], ['sdeco_cross', 50, 2, 6], ['sdeco_hex', 54, 2, 6], ['sdeco_diamond', 28, 1, 8], ['sdeco_stairs', 70, 0, 1],
+    ['dblock_plain', 70, 1, 6], ['dblock_frame', 76, 1, 6], ['dblock_grid', 82, 1, 6], ['dblock_dots', 88, 1, 6],
+    ['gblock_plain', 60, 1, 7], ['gblock_frame', 66, 1, 7], ['gblock_grid', 72, 1, 7], ['gblock_dots', 78, 1, 7]]);
+  return { format: 1, id: 'gravity-rush', name: 'Gravity rush', mode: 'cube', hue: 200, style: 'circuit', diff: 'normal', speed: 'normal', desc: 'Portales de gravedad, orbes y pads con saltos medidos: el suelo cambia de lado y hay que pulsar en el aire.', objs: o };
 };
 
 if (typeof module !== 'undefined') module.exports = { LevelKit, OfficialLevels };

@@ -22,6 +22,8 @@ const CFG = {
   WAVE: { slope: 1, inner: 6, size: 20 },
   BALL: { gravity: 2400, maxFall: 520, buffer: 0.12 },
   SPIDER: { gravity: 3000, maxFall: 900, buffer: 0.1 },
+  ORB: { yellow: 660, pink: 470, red: 900, green: 660, buffer: 0.1 },
+  PAD: { yellow: 860, pink: 560, red: 1050, blue: 260 },
   PLAYER: { size: 30, inner: 10, tolerance: 10 },
   SPIKE: { w: 8, h: 14 },
 };
@@ -76,6 +78,45 @@ const ObjectFactory = (() => {
     portal_ufo: { label: 'Portal UFO', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'ufo', rots: [0] },
     portal_wave: { label: 'Portal wave', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'wave', rots: [0] },
     portal_ball: { label: 'Portal ball', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'ball', rots: [0] },
+    portal_grav_down: { label: 'Portal gravedad normal', group: 'Portales', w: 1, h: 3, kind: 'portal', grav: 1, rots: [0] },
+    portal_grav_up: { label: 'Portal gravedad invertida', group: 'Portales', w: 1, h: 3, kind: 'portal', grav: -1, rots: [0] },
+    orb_yellow: { label: 'Orbe amarillo', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'yellow', rots: [0] },
+    orb_pink: { label: 'Orbe rosa', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'pink', rots: [0] },
+    orb_red: { label: 'Orbe rojo', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'red', rots: [0] },
+    orb_blue: { label: 'Orbe azul', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'blue', rots: [0] },
+    orb_green: { label: 'Orbe verde', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'green', rots: [0] },
+    pad_yellow: { label: 'Pad amarillo', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'yellow', rots: [0,180] },
+    pad_pink: { label: 'Pad rosa', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'pink', rots: [0,180] },
+    pad_red: { label: 'Pad rojo', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'red', rots: [0,180] },
+    pad_blue: { label: 'Pad azul', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'blue', rots: [0,180] },
+    block_glow: { label: 'Bloque brillante', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_stripes: { label: 'Bloque rayas', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_circuit: { label: 'Bloque circuito', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_brick: { label: 'Bloque ladrillo', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_tech: { label: 'Bloque tecnológico', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_crystal: { label: 'Bloque cristal', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    adeco_gear: { label: 'Engranaje giratorio', group: 'Decoración animada', w: 2, h: 2, kind: 'deco', rots: [0] },
+    adeco_pulse: { label: 'Anillos que laten', group: 'Decoración animada', w: 2, h: 2, kind: 'deco', rots: [0] },
+    adeco_arrows: { label: 'Flechas en marcha', group: 'Decoración animada', w: 3, h: 1, kind: 'deco', rots: [0] },
+    adeco_spark: { label: 'Chispas', group: 'Decoración animada', w: 3, h: 2, kind: 'deco', rots: [0] },
+    adeco_wave: { label: 'Onda', group: 'Decoración animada', w: 6, h: 1, kind: 'deco', rots: [0] },
+    adeco_eq: { label: 'Ecualizador', group: 'Decoración animada', w: 3, h: 2, kind: 'deco', rots: [0] },
+    adeco_orbit: { label: 'Órbita', group: 'Decoración animada', w: 3, h: 3, kind: 'deco', rots: [0] },
+    sdeco_crystal: { label: 'Cristal', group: 'Decoración estática', w: 1, h: 2, kind: 'deco', rots: [0] },
+    sdeco_skyline: { label: 'Ciudad', group: 'Decoración estática', w: 6, h: 4, kind: 'deco', rots: [0] },
+    sdeco_pillar: { label: 'Columna', group: 'Decoración estática', w: 1, h: 5, kind: 'deco', rots: [0] },
+    sdeco_cross: { label: 'Cruz', group: 'Decoración estática', w: 2, h: 2, kind: 'deco', rots: [0] },
+    sdeco_hex: { label: 'Hexágono', group: 'Decoración estática', w: 2, h: 2, kind: 'deco', rots: [0] },
+    sdeco_diamond: { label: 'Diamante', group: 'Decoración estática', w: 1, h: 1, kind: 'deco', rots: [0] },
+    sdeco_stairs: { label: 'Escalones', group: 'Decoración estática', w: 3, h: 3, kind: 'deco', rots: [0] },
+    dblock_plain: { label: 'Bloque deco liso', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_frame: { label: 'Bloque deco marco', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_grid: { label: 'Bloque deco rejilla', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_dots: { label: 'Bloque deco puntos', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_plain: { label: 'Cristal liso', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_frame: { label: 'Cristal marco', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_grid: { label: 'Cristal rejilla', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_dots: { label: 'Cristal puntos', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
     portal_spider: { label: 'Portal spider', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'spider', rots: [0] },
     deco_star: { label: 'Estrella', group: 'Decoración', w: 1, h: 1, kind: 'deco', rots: [0] },
     deco_cluster: { label: 'Cúmulo de estrellas', group: 'Decoración', w: 3, h: 2, kind: 'deco', rots: [0] },
@@ -100,7 +141,7 @@ const ObjectFactory = (() => {
     start: { label: 'Inicio', group: 'Nivel', w: 1, h: 1, kind: 'marker', rots: [0], unique: true },
     end: { label: 'Meta', group: 'Nivel', w: 1, h: 1, kind: 'end', rots: [0], unique: true },
   };
-  const COLLIDABLE = { solid: 1, hazard: 1, portal: 1 };
+  const COLLIDABLE = { solid: 1, hazard: 1, portal: 1, orb: 1, pad: 1 };
 
   function spikeRect(cx, cy, rot) {
     const w = CFG.SPIKE.w, h = CFG.SPIKE.h, m = (U - w) / 2;
@@ -121,6 +162,8 @@ const ObjectFactory = (() => {
       return r;
     }
     if (def.kind === 'portal') return [{ x: x0 + U / 2 - 6, y: y0, w: 12, h: def.h * U }];
+    if (def.kind === 'orb') return [{ x: x0 - 4, y: y0 - 4, w: U + 8, h: U + 8 }];
+    if (def.kind === 'pad') return [{ x: x0 + 3, y: o.rot === 180 ? y0 + U - 8 : y0, w: U - 6, h: 8 }];
     return [];
   }
 
@@ -146,21 +189,26 @@ const ObjectFactory = (() => {
 /* ---------- Modos de juego (extensibles: añadir clase + entrada en MODES) ---------- */
 class CubeMode {
   constructor() { this.id = 'cube'; this.slideCeil = false; this.slideDown = false; }
-  bounds() { return { floor: 0, ceil: Infinity }; }
-  enter(sim, p) { p.vy = Math.min(p.vy, CFG.CUBE.jump); }
-  canClimb(p) { return p.vy <= 0; }
-  canHang() { return false; }
+  bounds(p) { return p && p.gs < 0 ? { floor: 0, ceil: CFG.SHIP.ceil } : { floor: 0, ceil: Infinity }; }
+  slides(p) { return p.gs < 0; }
+  floorGround(p) { return p.gs > 0; }
+  topGround(p) { return p.gs > 0; }
+  enter(sim, p) { p.vy = p.gs > 0 ? Math.min(p.vy, CFG.CUBE.jump) : Math.max(p.vy, -CFG.CUBE.jump); }
+  canClimb(p) { return p.gs > 0 && p.vy <= 0; }
+  canHang(p) { return p.gs < 0 && p.vy >= 0; }
+  hangGround(p) { return p.gs < 0; }
+  ceilGround(p) { return p.gs < 0; }
   beforeMove(sim, p, held, dt, wasGround) {
-    const c = CFG.CUBE;
+    const c = CFG.CUBE, g = p.gs;
     if (held && wasGround) {
-      p.vy = c.jump;
+      p.vy = g * c.jump;
       sim.stats.jumps++;
       sim.events.push({ type: 'jump' });
     }
-    p.vy = Math.max(p.vy - c.gravity * dt, -c.maxFall);
+    p.vy = g > 0 ? Math.max(p.vy - c.gravity * dt, -c.maxFall) : Math.min(p.vy + c.gravity * dt, c.maxFall);
   }
   afterMove(sim, p, dt) {
-    if (!p.onGround) p.rot += CFG.CUBE.spin * dt;
+    if (!p.onGround) p.rot += CFG.CUBE.spin * dt * p.gs;
     else {
       const target = Math.round(p.rot / 90) * 90;
       const d = target - p.rot, step = 900 * dt;
@@ -173,17 +221,17 @@ class ShipMode {
   bounds() { return { floor: 0, ceil: CFG.SHIP.ceil }; }
   enter(sim, p, initial) {
     if (initial) p.y = 135;
-    p.vy = Math.max(-CFG.SHIP.maxDown, Math.min(CFG.SHIP.maxUp, p.vy));
+    p.vy = p.gs * Math.max(-CFG.SHIP.maxDown, Math.min(CFG.SHIP.maxUp, p.gs * p.vy));
   }
   canClimb() { return true; }
   canHang() { return true; }
   beforeMove(sim, p, held, dt) {
-    const s = CFG.SHIP;
-    p.vy += (held ? s.up : -s.down) * dt;
-    p.vy = Math.max(-s.maxDown, Math.min(s.maxUp, p.vy));
+    const s = CFG.SHIP, g = p.gs;
+    p.vy += g * (held ? s.up : -s.down) * dt;
+    p.vy = g * Math.max(-s.maxDown, Math.min(s.maxUp, g * p.vy));
   }
   afterMove(sim, p, dt) {
-    const target = -Math.max(-40, Math.min(40, p.vy * 0.1));
+    const target = -Math.max(-40, Math.min(40, p.gs * p.vy * 0.1));
     p.rot += (target - p.rot) * Math.min(1, dt * 14);
   }
 }
@@ -192,21 +240,22 @@ class UfoMode {
   bounds() { return { floor: 0, ceil: CFG.SHIP.ceil }; }
   enter(sim, p, initial) {
     if (initial) p.y = 135;
-    p.vy = Math.max(-CFG.UFO.maxFall, Math.min(CFG.UFO.jump, p.vy));
+    p.vy = p.gs * Math.max(-CFG.UFO.maxFall, Math.min(CFG.UFO.jump, p.gs * p.vy));
   }
   canClimb() { return true; }
   canHang() { return true; }
   beforeMove(sim, p, held, dt) {
     const u = CFG.UFO;
+    const g = p.gs;
     if (sim.pressed) {
-      p.vy = u.jump;
+      p.vy = g * u.jump;
       sim.stats.jumps++;
       sim.events.push({ type: 'flap' });
     }
-    p.vy = Math.max(p.vy - u.gravity * dt, -u.maxFall);
+    p.vy = g * Math.max(g * p.vy - u.gravity * dt, -u.maxFall);
   }
   afterMove(sim, p, dt) {
-    const target = -Math.max(-18, Math.min(18, p.vy * 0.04));
+    const target = -Math.max(-18, Math.min(18, p.gs * p.vy * 0.04));
     p.rot += (target - p.rot) * Math.min(1, dt * 12);
   }
 }
@@ -302,7 +351,7 @@ class Player {
     this.x = x; this.y = 0; this.vy = 0; this.rot = 0;
     this.px = x; this.py = 0; this.prot = 0;
     this.onGround = true; this.mode = 'cube'; this.speedMul = 1; this.alive = true;
-    this.dir = -1; this.buf = 0; this.held = false;
+    this.dir = -1; this.buf = 0; this.held = false; this.gs = 1; this.orbBuf = 0;
   }
   rect() {
     const s = CFG.PLAYER.size, d = MODES[this.mode].inset || 0;
@@ -463,6 +512,7 @@ class Level {
     if (this.endX <= this.startX * U) this.endX = (this.startX + 10) * U;
     this.sorted = this.objects.slice().sort((a, b) => a.x - b.x);
     this.triggers = this.sorted.filter((o) => o.kind === 'trigger');
+    this.hasInter = this.objects.some((o) => o.kind === 'orb' || o.kind === 'pad');
   }
 }
 
@@ -631,8 +681,8 @@ class PhysicsEngine {
   enterMode(id, initial) {
     const sim = this.sim, p = sim.player;
     p.mode = id;
-    p.dir = -1;
-    sim.bounds = MODES[id].bounds();
+    p.dir = p.gs > 0 ? -1 : 1;
+    sim.bounds = MODES[id].bounds(p);
     MODES[id].enter(sim, p, initial);
     if (!initial) sim.events.push({ type: 'portal', mode: id });
   }
@@ -651,6 +701,9 @@ class PhysicsEngine {
     p.px = p.x; p.py = p.y; p.prot = p.rot;
     const mode = MODES[p.mode];
     const wasGround = p.onGround;
+    /* La pulsación que ya se gastó en saltar o girar desde el suelo no activa un orbe. */
+    if (sim.pressed) p.orbBuf = wasGround && (p.mode === 'cube' || p.mode === 'ball' || p.mode === 'spider') ? 0 : CFG.ORB.buffer;
+    else if (p.orbBuf > 0) p.orbBuf = Math.max(0, p.orbBuf - dt);
     p.onGround = false;
     mode.beforeMove(sim, p, held, dt, wasGround);
 
@@ -661,6 +714,7 @@ class PhysicsEngine {
     mode.afterMove(sim, p, dt);
     if (!this.checkHazards(p)) return;
     this.checkPortals(p);
+    if (lv.hasInter) this.checkInteractables(p);
     sim.time += dt;
     sim.fx.advance(p.x, sim.time);
     if (p.x >= lv.endX) {
@@ -696,12 +750,13 @@ class PhysicsEngine {
 
   resolveY(p, mode) {
     const sim = this.sim, b = sim.bounds, size = CFG.PLAYER.size, d = mode.inset || 0;
-    if (p.y + d <= b.floor) { p.y = b.floor - d; p.vy = 0; p.onGround = true; }
+    if (p.y + d <= b.floor) { p.y = b.floor - d; p.vy = 0; p.onGround = mode.floorGround ? mode.floorGround(p) : true; }
+    const slides = mode.slides ? mode.slides(p) : mode.slideCeil;
     if (p.y + size - d >= b.ceil) {
       p.y = b.ceil - size + d;
       if (p.vy > 0) p.vy = 0;
       if (mode.ceilGround && mode.ceilGround(p)) p.onGround = true;
-      if (!mode.slideCeil) return this.kill('ceiling');
+      if (!slides) return this.kill('ceiling');
     }
     const hits = CollisionSystem.query(sim.level, p.rect(), 'solid', this.hits, sim.fx);
     for (let i = 0; i < hits.length; i++) {
@@ -709,10 +764,10 @@ class PhysicsEngine {
       if (!CollisionSystem.overlap(p.rect(), r)) continue;
       if (mode.solidKills) return this.kill('block');
       if (p.vy <= 0) {
-        p.y = r.y + r.h; p.vy = 0; p.onGround = true;
+        p.y = r.y + r.h; p.vy = 0; p.onGround = mode.topGround ? mode.topGround(p) : true;
       } else if (mode.ceilGround && mode.ceilGround(p)) {
         p.y = r.y - size; p.vy = 0; p.onGround = true;
-      } else if (mode.slideCeil) {
+      } else if (slides) {
         p.y = r.y - size; p.vy = 0;
       } else {
         return this.kill('ceiling');
@@ -726,11 +781,57 @@ class PhysicsEngine {
     return hits.length ? this.kill('spike') : true;
   }
 
+  setGravity(p, gs) {
+    const sim = this.sim;
+    p.gs = gs;
+    if (p.mode === 'ball' || p.mode === 'spider') p.dir = gs > 0 ? -1 : 1;
+    sim.bounds = MODES[p.mode].bounds(p);
+    p.onGround = false;
+    sim.events.push({ type: 'gravity', gs });
+  }
+
+  /* Orbes (requieren una pulsación estando dentro) y pads (se activan al tocarlos). */
+  checkInteractables(p) {
+    const sim = this.sim, used = sim.used, box = p.rect();
+    const orbs = CollisionSystem.query(sim.level, box, 'orb', this.hits, sim.fx).map((h) => h.o);
+    const pads = CollisionSystem.query(sim.level, box, 'pad', this.hits, sim.fx).map((h) => h.o);
+    for (const id of Array.from(used)) if (!orbs.some((o) => o.id === id) && !pads.some((o) => o.id === id)) used.delete(id);
+    for (const o of pads) {
+      if (used.has(o.id)) continue;
+      used.add(o.id);
+      this.boost(p, o.def.pad, o.rot === 180 ? -1 : 1, true);
+    }
+    if (p.orbBuf > 0) {
+      for (const o of orbs) {
+        if (used.has(o.id)) continue;
+        used.add(o.id); p.orbBuf = 0;
+        this.boost(p, o.def.orb, 0, false);
+        break;
+      }
+    }
+  }
+  /* Impulso de orbe o pad. En pads `sign` es la dirección del pad; en orbes el salto va contra la gravedad. */
+  boost(p, color, sign, isPad) {
+    const sim = this.sim, flip = color === 'blue' || color === 'green';
+    if (flip) this.setGravity(p, -p.gs);
+    const kicks = isPad ? CFG.PAD : CFG.ORB;
+    const kick = kicks[color];
+    const push = p.mode === 'cube' || p.mode === 'ufo' || (isPad && p.mode === 'ship');
+    if (push && kick) {
+      const dirn = isPad ? sign : p.gs;
+      p.vy = color === 'blue' && isPad ? dirn * kick : dirn * kick;
+    } else if (flip && p.mode !== 'ball' && p.mode !== 'spider' && p.mode !== 'wave') p.vy = 0;
+    p.onGround = false;
+    sim.stats.jumps++;
+    sim.events.push({ type: 'boost', color, pad: isPad });
+  }
+
   checkPortals(p) {
     const hits = CollisionSystem.query(this.sim.level, p.rect(), 'portal', this.hits, this.sim.fx);
     for (let i = 0; i < hits.length; i++) {
       const d = hits[i].o.def;
       if (d.mode && p.mode !== d.mode) this.enterMode(d.mode, false);
+      if (d.grav && p.gs !== d.grav) this.setGravity(p, d.grav);
       if (d.speed) {
         const m = CFG.SPEED_STEPS[d.speed];
         if (p.speedMul !== m) { p.speedMul = m; this.sim.events.push({ type: 'speed', value: m }); }
@@ -745,6 +846,7 @@ class Simulation {
     this.player = new Player();
     this.physics = new PhysicsEngine(this);
     this.fx = new Fx(level);
+    this.used = new Set();
     this.events = [];
     this.bounds = { floor: 0, ceil: Infinity };
     this.pressed = false; this.prevHeld = true;
@@ -760,6 +862,7 @@ class Simulation {
     this.events.length = 0;
     this.physics.enterMode(this.level.startMode, true);
     this.fx.reset();
+    this.used.clear();
     this.fx.advance(this.player.x, 0);
   }
   step(held) { this.physics.step(held, CFG.TICK); }
@@ -770,7 +873,7 @@ class Simulation {
   save() {
     const p = this.player;
     return { x: p.x, y: p.y, vy: p.vy, rot: p.rot, g: p.onGround, m: p.mode, s: p.speedMul, a: p.alive,
-      t: this.time, f: this.finished, b: this.bounds, ph: this.prevHeld, d: p.dir, bf: p.buf, fx: this.fx.snap() };
+      t: this.time, f: this.finished, b: this.bounds, ph: this.prevHeld, d: p.dir, bf: p.buf, fx: this.fx.snap(), gs: p.gs, ob: p.orbBuf, u: this.level.hasInter ? new Set(this.used) : null };
   }
   load(s) {
     const p = this.player;
@@ -778,6 +881,8 @@ class Simulation {
     p.speedMul = s.s; p.alive = s.a; this.time = s.t; this.finished = s.f; this.bounds = s.b;
     this.prevHeld = s.ph; p.dir = s.d; p.buf = s.bf;
     this.fx.restore(s.fx);
+    p.gs = s.gs; p.orbBuf = s.ob;
+    this.used = s.u ? new Set(s.u) : new Set();
   }
 }
 

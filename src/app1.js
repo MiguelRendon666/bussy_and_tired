@@ -423,7 +423,10 @@ class Renderer {
     const c = this.ctx, s = v.s, d = o.def, lw = Math.max(1, 1.5 * s);
     const x = this.X(v, o.x * U), y = this.Y(v, (o.y + d.h) * U), w = d.w * U * s, h = d.h * U * s;
     switch (d.kind) {
+      case 'orb': this.orb(o, x, y, w, h, s); break;
+      case 'pad': this.pad(o, x, y, w, h, s); break;
       case 'solid':
+        if (o.type !== 'block') { this.solidVariant(o.type, x, y, w, h, th, s, lw); break; }
         c.fillStyle = 'rgba(4,8,26,0.93)'; c.fillRect(x, y, w, h);
         c.strokeStyle = th.edge; c.lineWidth = lw; c.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw);
         c.globalAlpha = (0.35) * this.am; c.strokeRect(x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6); c.globalAlpha = this.am;
@@ -536,7 +539,7 @@ class Renderer {
   hitboxes(v, level, sim) {
     const c = this.ctx, vw = this.w / v.s;
     c.lineWidth = Math.max(1, v.s);
-    const col = { solid: '#4aa3ff', hazard: '#ff3b3b', portal: '#6dff6d' };
+    const col = { solid: '#4aa3ff', hazard: '#ff3b3b', portal: '#6dff6d', orb: '#ffd800', pad: '#ff9f2e' };
     for (const o of level.sorted) {
       if (!o.rects.length || o.x * U > v.x + vw + U) continue;
       if (o.x * U + o.def.w * U < v.x - U) continue;

@@ -371,6 +371,8 @@ const CFG = {
   WAVE: { slope: 1, inner: 6, size: 20 },
   BALL: { gravity: 2400, maxFall: 520, buffer: 0.12 },
   SPIDER: { gravity: 3000, maxFall: 900, buffer: 0.1 },
+  ORB: { yellow: 660, pink: 470, red: 900, green: 660, buffer: 0.1 },
+  PAD: { yellow: 860, pink: 560, red: 1050, blue: 260 },
   PLAYER: { size: 30, inner: 10, tolerance: 10 },
   SPIKE: { w: 8, h: 14 },
 };
@@ -425,6 +427,45 @@ const ObjectFactory = (() => {
     portal_ufo: { label: 'Portal UFO', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'ufo', rots: [0] },
     portal_wave: { label: 'Portal wave', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'wave', rots: [0] },
     portal_ball: { label: 'Portal ball', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'ball', rots: [0] },
+    portal_grav_down: { label: 'Portal gravedad normal', group: 'Portales', w: 1, h: 3, kind: 'portal', grav: 1, rots: [0] },
+    portal_grav_up: { label: 'Portal gravedad invertida', group: 'Portales', w: 1, h: 3, kind: 'portal', grav: -1, rots: [0] },
+    orb_yellow: { label: 'Orbe amarillo', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'yellow', rots: [0] },
+    orb_pink: { label: 'Orbe rosa', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'pink', rots: [0] },
+    orb_red: { label: 'Orbe rojo', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'red', rots: [0] },
+    orb_blue: { label: 'Orbe azul', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'blue', rots: [0] },
+    orb_green: { label: 'Orbe verde', group: 'Orbes', w: 1, h: 1, kind: 'orb', orb: 'green', rots: [0] },
+    pad_yellow: { label: 'Pad amarillo', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'yellow', rots: [0,180] },
+    pad_pink: { label: 'Pad rosa', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'pink', rots: [0,180] },
+    pad_red: { label: 'Pad rojo', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'red', rots: [0,180] },
+    pad_blue: { label: 'Pad azul', group: 'Pads', w: 1, h: 1, kind: 'pad', pad: 'blue', rots: [0,180] },
+    block_glow: { label: 'Bloque brillante', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_stripes: { label: 'Bloque rayas', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_circuit: { label: 'Bloque circuito', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_brick: { label: 'Bloque ladrillo', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_tech: { label: 'Bloque tecnológico', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    block_crystal: { label: 'Bloque cristal', group: 'Sólidos', w: 1, h: 1, kind: 'solid', rots: [0] },
+    adeco_gear: { label: 'Engranaje giratorio', group: 'Decoración animada', w: 2, h: 2, kind: 'deco', rots: [0] },
+    adeco_pulse: { label: 'Anillos que laten', group: 'Decoración animada', w: 2, h: 2, kind: 'deco', rots: [0] },
+    adeco_arrows: { label: 'Flechas en marcha', group: 'Decoración animada', w: 3, h: 1, kind: 'deco', rots: [0] },
+    adeco_spark: { label: 'Chispas', group: 'Decoración animada', w: 3, h: 2, kind: 'deco', rots: [0] },
+    adeco_wave: { label: 'Onda', group: 'Decoración animada', w: 6, h: 1, kind: 'deco', rots: [0] },
+    adeco_eq: { label: 'Ecualizador', group: 'Decoración animada', w: 3, h: 2, kind: 'deco', rots: [0] },
+    adeco_orbit: { label: 'Órbita', group: 'Decoración animada', w: 3, h: 3, kind: 'deco', rots: [0] },
+    sdeco_crystal: { label: 'Cristal', group: 'Decoración estática', w: 1, h: 2, kind: 'deco', rots: [0] },
+    sdeco_skyline: { label: 'Ciudad', group: 'Decoración estática', w: 6, h: 4, kind: 'deco', rots: [0] },
+    sdeco_pillar: { label: 'Columna', group: 'Decoración estática', w: 1, h: 5, kind: 'deco', rots: [0] },
+    sdeco_cross: { label: 'Cruz', group: 'Decoración estática', w: 2, h: 2, kind: 'deco', rots: [0] },
+    sdeco_hex: { label: 'Hexágono', group: 'Decoración estática', w: 2, h: 2, kind: 'deco', rots: [0] },
+    sdeco_diamond: { label: 'Diamante', group: 'Decoración estática', w: 1, h: 1, kind: 'deco', rots: [0] },
+    sdeco_stairs: { label: 'Escalones', group: 'Decoración estática', w: 3, h: 3, kind: 'deco', rots: [0] },
+    dblock_plain: { label: 'Bloque deco liso', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_frame: { label: 'Bloque deco marco', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_grid: { label: 'Bloque deco rejilla', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    dblock_dots: { label: 'Bloque deco puntos', group: 'Bloques deco', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_plain: { label: 'Cristal liso', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_frame: { label: 'Cristal marco', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_grid: { label: 'Cristal rejilla', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
+    gblock_dots: { label: 'Cristal puntos', group: 'Bloques deco transparentes', w: 1, h: 1, kind: 'deco', rots: [0] },
     portal_spider: { label: 'Portal spider', group: 'Portales', w: 1, h: 3, kind: 'portal', mode: 'spider', rots: [0] },
     deco_star: { label: 'Estrella', group: 'Decoración', w: 1, h: 1, kind: 'deco', rots: [0] },
     deco_cluster: { label: 'Cúmulo de estrellas', group: 'Decoración', w: 3, h: 2, kind: 'deco', rots: [0] },
@@ -449,7 +490,7 @@ const ObjectFactory = (() => {
     start: { label: 'Inicio', group: 'Nivel', w: 1, h: 1, kind: 'marker', rots: [0], unique: true },
     end: { label: 'Meta', group: 'Nivel', w: 1, h: 1, kind: 'end', rots: [0], unique: true },
   };
-  const COLLIDABLE = { solid: 1, hazard: 1, portal: 1 };
+  const COLLIDABLE = { solid: 1, hazard: 1, portal: 1, orb: 1, pad: 1 };
 
   function spikeRect(cx, cy, rot) {
     const w = CFG.SPIKE.w, h = CFG.SPIKE.h, m = (U - w) / 2;
@@ -470,6 +511,8 @@ const ObjectFactory = (() => {
       return r;
     }
     if (def.kind === 'portal') return [{ x: x0 + U / 2 - 6, y: y0, w: 12, h: def.h * U }];
+    if (def.kind === 'orb') return [{ x: x0 - 4, y: y0 - 4, w: U + 8, h: U + 8 }];
+    if (def.kind === 'pad') return [{ x: x0 + 3, y: o.rot === 180 ? y0 + U - 8 : y0, w: U - 6, h: 8 }];
     return [];
   }
 
@@ -495,21 +538,26 @@ const ObjectFactory = (() => {
 /* ---------- Modos de juego (extensibles: añadir clase + entrada en MODES) ---------- */
 class CubeMode {
   constructor() { this.id = 'cube'; this.slideCeil = false; this.slideDown = false; }
-  bounds() { return { floor: 0, ceil: Infinity }; }
-  enter(sim, p) { p.vy = Math.min(p.vy, CFG.CUBE.jump); }
-  canClimb(p) { return p.vy <= 0; }
-  canHang() { return false; }
+  bounds(p) { return p && p.gs < 0 ? { floor: 0, ceil: CFG.SHIP.ceil } : { floor: 0, ceil: Infinity }; }
+  slides(p) { return p.gs < 0; }
+  floorGround(p) { return p.gs > 0; }
+  topGround(p) { return p.gs > 0; }
+  enter(sim, p) { p.vy = p.gs > 0 ? Math.min(p.vy, CFG.CUBE.jump) : Math.max(p.vy, -CFG.CUBE.jump); }
+  canClimb(p) { return p.gs > 0 && p.vy <= 0; }
+  canHang(p) { return p.gs < 0 && p.vy >= 0; }
+  hangGround(p) { return p.gs < 0; }
+  ceilGround(p) { return p.gs < 0; }
   beforeMove(sim, p, held, dt, wasGround) {
-    const c = CFG.CUBE;
+    const c = CFG.CUBE, g = p.gs;
     if (held && wasGround) {
-      p.vy = c.jump;
+      p.vy = g * c.jump;
       sim.stats.jumps++;
       sim.events.push({ type: 'jump' });
     }
-    p.vy = Math.max(p.vy - c.gravity * dt, -c.maxFall);
+    p.vy = g > 0 ? Math.max(p.vy - c.gravity * dt, -c.maxFall) : Math.min(p.vy + c.gravity * dt, c.maxFall);
   }
   afterMove(sim, p, dt) {
-    if (!p.onGround) p.rot += CFG.CUBE.spin * dt;
+    if (!p.onGround) p.rot += CFG.CUBE.spin * dt * p.gs;
     else {
       const target = Math.round(p.rot / 90) * 90;
       const d = target - p.rot, step = 900 * dt;
@@ -522,17 +570,17 @@ class ShipMode {
   bounds() { return { floor: 0, ceil: CFG.SHIP.ceil }; }
   enter(sim, p, initial) {
     if (initial) p.y = 135;
-    p.vy = Math.max(-CFG.SHIP.maxDown, Math.min(CFG.SHIP.maxUp, p.vy));
+    p.vy = p.gs * Math.max(-CFG.SHIP.maxDown, Math.min(CFG.SHIP.maxUp, p.gs * p.vy));
   }
   canClimb() { return true; }
   canHang() { return true; }
   beforeMove(sim, p, held, dt) {
-    const s = CFG.SHIP;
-    p.vy += (held ? s.up : -s.down) * dt;
-    p.vy = Math.max(-s.maxDown, Math.min(s.maxUp, p.vy));
+    const s = CFG.SHIP, g = p.gs;
+    p.vy += g * (held ? s.up : -s.down) * dt;
+    p.vy = g * Math.max(-s.maxDown, Math.min(s.maxUp, g * p.vy));
   }
   afterMove(sim, p, dt) {
-    const target = -Math.max(-40, Math.min(40, p.vy * 0.1));
+    const target = -Math.max(-40, Math.min(40, p.gs * p.vy * 0.1));
     p.rot += (target - p.rot) * Math.min(1, dt * 14);
   }
 }
@@ -541,21 +589,22 @@ class UfoMode {
   bounds() { return { floor: 0, ceil: CFG.SHIP.ceil }; }
   enter(sim, p, initial) {
     if (initial) p.y = 135;
-    p.vy = Math.max(-CFG.UFO.maxFall, Math.min(CFG.UFO.jump, p.vy));
+    p.vy = p.gs * Math.max(-CFG.UFO.maxFall, Math.min(CFG.UFO.jump, p.gs * p.vy));
   }
   canClimb() { return true; }
   canHang() { return true; }
   beforeMove(sim, p, held, dt) {
     const u = CFG.UFO;
+    const g = p.gs;
     if (sim.pressed) {
-      p.vy = u.jump;
+      p.vy = g * u.jump;
       sim.stats.jumps++;
       sim.events.push({ type: 'flap' });
     }
-    p.vy = Math.max(p.vy - u.gravity * dt, -u.maxFall);
+    p.vy = g * Math.max(g * p.vy - u.gravity * dt, -u.maxFall);
   }
   afterMove(sim, p, dt) {
-    const target = -Math.max(-18, Math.min(18, p.vy * 0.04));
+    const target = -Math.max(-18, Math.min(18, p.gs * p.vy * 0.04));
     p.rot += (target - p.rot) * Math.min(1, dt * 12);
   }
 }
@@ -651,7 +700,7 @@ class Player {
     this.x = x; this.y = 0; this.vy = 0; this.rot = 0;
     this.px = x; this.py = 0; this.prot = 0;
     this.onGround = true; this.mode = 'cube'; this.speedMul = 1; this.alive = true;
-    this.dir = -1; this.buf = 0; this.held = false;
+    this.dir = -1; this.buf = 0; this.held = false; this.gs = 1; this.orbBuf = 0;
   }
   rect() {
     const s = CFG.PLAYER.size, d = MODES[this.mode].inset || 0;
@@ -812,6 +861,7 @@ class Level {
     if (this.endX <= this.startX * U) this.endX = (this.startX + 10) * U;
     this.sorted = this.objects.slice().sort((a, b) => a.x - b.x);
     this.triggers = this.sorted.filter((o) => o.kind === 'trigger');
+    this.hasInter = this.objects.some((o) => o.kind === 'orb' || o.kind === 'pad');
   }
 }
 
@@ -980,8 +1030,8 @@ class PhysicsEngine {
   enterMode(id, initial) {
     const sim = this.sim, p = sim.player;
     p.mode = id;
-    p.dir = -1;
-    sim.bounds = MODES[id].bounds();
+    p.dir = p.gs > 0 ? -1 : 1;
+    sim.bounds = MODES[id].bounds(p);
     MODES[id].enter(sim, p, initial);
     if (!initial) sim.events.push({ type: 'portal', mode: id });
   }
@@ -1000,6 +1050,9 @@ class PhysicsEngine {
     p.px = p.x; p.py = p.y; p.prot = p.rot;
     const mode = MODES[p.mode];
     const wasGround = p.onGround;
+    /* La pulsación que ya se gastó en saltar o girar desde el suelo no activa un orbe. */
+    if (sim.pressed) p.orbBuf = wasGround && (p.mode === 'cube' || p.mode === 'ball' || p.mode === 'spider') ? 0 : CFG.ORB.buffer;
+    else if (p.orbBuf > 0) p.orbBuf = Math.max(0, p.orbBuf - dt);
     p.onGround = false;
     mode.beforeMove(sim, p, held, dt, wasGround);
 
@@ -1010,6 +1063,7 @@ class PhysicsEngine {
     mode.afterMove(sim, p, dt);
     if (!this.checkHazards(p)) return;
     this.checkPortals(p);
+    if (lv.hasInter) this.checkInteractables(p);
     sim.time += dt;
     sim.fx.advance(p.x, sim.time);
     if (p.x >= lv.endX) {
@@ -1045,12 +1099,13 @@ class PhysicsEngine {
 
   resolveY(p, mode) {
     const sim = this.sim, b = sim.bounds, size = CFG.PLAYER.size, d = mode.inset || 0;
-    if (p.y + d <= b.floor) { p.y = b.floor - d; p.vy = 0; p.onGround = true; }
+    if (p.y + d <= b.floor) { p.y = b.floor - d; p.vy = 0; p.onGround = mode.floorGround ? mode.floorGround(p) : true; }
+    const slides = mode.slides ? mode.slides(p) : mode.slideCeil;
     if (p.y + size - d >= b.ceil) {
       p.y = b.ceil - size + d;
       if (p.vy > 0) p.vy = 0;
       if (mode.ceilGround && mode.ceilGround(p)) p.onGround = true;
-      if (!mode.slideCeil) return this.kill('ceiling');
+      if (!slides) return this.kill('ceiling');
     }
     const hits = CollisionSystem.query(sim.level, p.rect(), 'solid', this.hits, sim.fx);
     for (let i = 0; i < hits.length; i++) {
@@ -1058,10 +1113,10 @@ class PhysicsEngine {
       if (!CollisionSystem.overlap(p.rect(), r)) continue;
       if (mode.solidKills) return this.kill('block');
       if (p.vy <= 0) {
-        p.y = r.y + r.h; p.vy = 0; p.onGround = true;
+        p.y = r.y + r.h; p.vy = 0; p.onGround = mode.topGround ? mode.topGround(p) : true;
       } else if (mode.ceilGround && mode.ceilGround(p)) {
         p.y = r.y - size; p.vy = 0; p.onGround = true;
-      } else if (mode.slideCeil) {
+      } else if (slides) {
         p.y = r.y - size; p.vy = 0;
       } else {
         return this.kill('ceiling');
@@ -1075,11 +1130,57 @@ class PhysicsEngine {
     return hits.length ? this.kill('spike') : true;
   }
 
+  setGravity(p, gs) {
+    const sim = this.sim;
+    p.gs = gs;
+    if (p.mode === 'ball' || p.mode === 'spider') p.dir = gs > 0 ? -1 : 1;
+    sim.bounds = MODES[p.mode].bounds(p);
+    p.onGround = false;
+    sim.events.push({ type: 'gravity', gs });
+  }
+
+  /* Orbes (requieren una pulsación estando dentro) y pads (se activan al tocarlos). */
+  checkInteractables(p) {
+    const sim = this.sim, used = sim.used, box = p.rect();
+    const orbs = CollisionSystem.query(sim.level, box, 'orb', this.hits, sim.fx).map((h) => h.o);
+    const pads = CollisionSystem.query(sim.level, box, 'pad', this.hits, sim.fx).map((h) => h.o);
+    for (const id of Array.from(used)) if (!orbs.some((o) => o.id === id) && !pads.some((o) => o.id === id)) used.delete(id);
+    for (const o of pads) {
+      if (used.has(o.id)) continue;
+      used.add(o.id);
+      this.boost(p, o.def.pad, o.rot === 180 ? -1 : 1, true);
+    }
+    if (p.orbBuf > 0) {
+      for (const o of orbs) {
+        if (used.has(o.id)) continue;
+        used.add(o.id); p.orbBuf = 0;
+        this.boost(p, o.def.orb, 0, false);
+        break;
+      }
+    }
+  }
+  /* Impulso de orbe o pad. En pads `sign` es la dirección del pad; en orbes el salto va contra la gravedad. */
+  boost(p, color, sign, isPad) {
+    const sim = this.sim, flip = color === 'blue' || color === 'green';
+    if (flip) this.setGravity(p, -p.gs);
+    const kicks = isPad ? CFG.PAD : CFG.ORB;
+    const kick = kicks[color];
+    const push = p.mode === 'cube' || p.mode === 'ufo' || (isPad && p.mode === 'ship');
+    if (push && kick) {
+      const dirn = isPad ? sign : p.gs;
+      p.vy = color === 'blue' && isPad ? dirn * kick : dirn * kick;
+    } else if (flip && p.mode !== 'ball' && p.mode !== 'spider' && p.mode !== 'wave') p.vy = 0;
+    p.onGround = false;
+    sim.stats.jumps++;
+    sim.events.push({ type: 'boost', color, pad: isPad });
+  }
+
   checkPortals(p) {
     const hits = CollisionSystem.query(this.sim.level, p.rect(), 'portal', this.hits, this.sim.fx);
     for (let i = 0; i < hits.length; i++) {
       const d = hits[i].o.def;
       if (d.mode && p.mode !== d.mode) this.enterMode(d.mode, false);
+      if (d.grav && p.gs !== d.grav) this.setGravity(p, d.grav);
       if (d.speed) {
         const m = CFG.SPEED_STEPS[d.speed];
         if (p.speedMul !== m) { p.speedMul = m; this.sim.events.push({ type: 'speed', value: m }); }
@@ -1094,6 +1195,7 @@ class Simulation {
     this.player = new Player();
     this.physics = new PhysicsEngine(this);
     this.fx = new Fx(level);
+    this.used = new Set();
     this.events = [];
     this.bounds = { floor: 0, ceil: Infinity };
     this.pressed = false; this.prevHeld = true;
@@ -1109,6 +1211,7 @@ class Simulation {
     this.events.length = 0;
     this.physics.enterMode(this.level.startMode, true);
     this.fx.reset();
+    this.used.clear();
     this.fx.advance(this.player.x, 0);
   }
   step(held) { this.physics.step(held, CFG.TICK); }
@@ -1119,7 +1222,7 @@ class Simulation {
   save() {
     const p = this.player;
     return { x: p.x, y: p.y, vy: p.vy, rot: p.rot, g: p.onGround, m: p.mode, s: p.speedMul, a: p.alive,
-      t: this.time, f: this.finished, b: this.bounds, ph: this.prevHeld, d: p.dir, bf: p.buf, fx: this.fx.snap() };
+      t: this.time, f: this.finished, b: this.bounds, ph: this.prevHeld, d: p.dir, bf: p.buf, fx: this.fx.snap(), gs: p.gs, ob: p.orbBuf, u: this.level.hasInter ? new Set(this.used) : null };
   }
   load(s) {
     const p = this.player;
@@ -1127,6 +1230,8 @@ class Simulation {
     p.speedMul = s.s; p.alive = s.a; this.time = s.t; this.finished = s.f; this.bounds = s.b;
     this.prevHeld = s.ph; p.dir = s.d; p.buf = s.bf;
     this.fx.restore(s.fx);
+    p.gs = s.gs; p.orbBuf = s.ob;
+    this.used = s.u ? new Set(s.u) : new Set();
   }
 }
 
@@ -1244,6 +1349,20 @@ const Levels = {
    Unidades: bloques. Fila 0 = suelo, filas 0-8 = zona de modo especial (techo en 9).
    ============================================================ */
 const LevelKit = {
+  /* Reglas de diseño medidas con el motor a velocidad 1x (jumpinfo.js, chainsearch.js).
+     "Ventana" = margen de tiempo que tiene el jugador para pulsar; humano cómodo >= 150 ms. */
+  JUMP: {
+    cubeHeight: 2.13, cubeLength: 4.0,          // un salto desde el suelo
+    carpetMax: 3,                                // pinchos seguidos con un solo salto (ventana 125 ms; con 2: 221 ms)
+    orbCarpet: {                                 // pinchos seguidos con UN orbe en el aire y dónde ponerlo (celda desde el 1.er pincho)
+      yellow: { max: 5, off: (n) => n - 4 },     // 5 -> 233 ms, 6 -> 167 ms (7 -> 67 ms: no)
+      pink: { max: 4, off: (n) => n - 3 },       // 4 -> 258 ms, 5 -> 167 ms
+      red: { max: 6, off: (n) => n - 5 },        // 6 -> 233 ms, 7 -> 167 ms (8 -> 67 ms: no)
+    },
+    padLanding: { pink: 2.45, yellow: 4.27, red: 5.5 },  // dónde aterriza el cubo desde la celda del pad
+    minGap: 8,                                   // bloques libres entre dos obstáculos que exigen salto
+    flipFlight: 4,                               // bloques que tarda el cubo en cruzar de suelo a techo tras invertir la gravedad
+  },
   make() {
     const o = [];
     let seed = 7;
@@ -1646,6 +1765,116 @@ OfficialLevels.spider = function () {
   o.push(['end', endX, 0, 0]);
   k.scatter(4, endX, [['deco_star', 10, 1, 8], ['deco_cluster', 30, 2, 6], ['deco_orb', 40, 2, 6], ['deco_arc', 46, 3, 7], ['deco_float', 16, 1, 8], ['deco_chevrons', 36, 1, 8]]);
   return { format: 1, id: 'witzy-witzy-spider', name: 'Witzy witzy spider', mode: 'cube', hue: 285, style: 'stars', diff: 'easy', speed: 'normal', desc: 'Largo y tranquilo: pasa por todos los vehículos y termina trepando como una spider.', objs: o };
+};
+
+
+/* ---------- Nivel 8: Gravity rush (portales de gravedad, orbes y pads), rehecho con las reglas de LevelKit.JUMP ---------- */
+OfficialLevels.gravity = function (stop) {
+  const FxU = typeof FxUtil !== 'undefined' ? FxUtil : require('./core.js').FxUtil;
+  const k = LevelKit.make(), { o, S, S2, S3, gate } = k, J = LevelKit.JUMP;
+  const hex = (h, s = 100, l = 50) => FxU.hslToHex([h, s, l]);
+  const T = (type, x, y, props) => o.push([type, x, y, 0, props]);
+  const C = (x, y = 8) => o.push(['spike', x, y, 180]);
+  const blk = (type, x, y, w, h) => { for (let i = 0; i < w; i++) for (let j = 0; j < h; j++) o.push([type, x + i, y + j, 0]); };
+  const grav = (up, x) => { for (let y = 0; y < 9; y += 3) o.push([up ? 'portal_grav_up' : 'portal_grav_down', x, y, 0]); };
+  /* Alfombra de n pinchos que se cruza con un orbe a mitad del salto (n <= J.orbCarpet[color].max) */
+  const orbCarpet = (x, n, color) => {
+    for (let i = 0; i < n; i++) S(x + i);
+    o.push(['orb_' + color, x + J.orbCarpet[color].off(n), 2, 0]);
+    return x + n;
+  };
+  const paint = (x, hue, d = 1.2) => {
+    T('trig_color', x, 12, { t: 'bg', c: hex(hue, 85, 40), d });
+    T('trig_color', x, 13, { t: 'ground', c: hex(hue, 70, 30), d });
+    T('trig_color', x, 14, { t: 'line', c: hex(hue, 100, 66), d });
+    T('trig_color', x, 15, { t: 'obj', c: hex((hue + 25) % 360, 100, 62), d });
+  };
+  o.push(['start', 0, 0, 0]);
+  let x = 28;
+  const sections = [
+    /* 1. Pads: el cubo sale disparado sin pulsar; los pinchos quedan bajo el arco */
+    () => {
+      o.push(['pad_yellow', x, 0, 0]); S2(x + 1); x += Math.ceil(J.padLanding.yellow) + J.minGap;
+      o.push(['pad_pink', x, 0, 0]); S(x + 1); x += Math.ceil(J.padLanding.pink) + J.minGap;
+      o.push(['pad_red', x, 0, 0]); blk('block_tech', x + 5, 0, 3, 3); S(x + 9); x += 9 + J.minGap;
+      paint(x - 4, 175);
+    },
+    /* 2. Orbes: un orbe a mitad del salto sobre una alfombra de pinchos (tamaños dentro de J.orbCarpet) */
+    () => {
+      x = orbCarpet(x + 3, 5, 'yellow') + J.minGap + 4;
+      x = orbCarpet(x, 4, 'pink') + J.minGap + 4;
+      x = orbCarpet(x, 6, 'red') + J.minGap + 4;
+      blk('block_glow', x, 0, 3, 2); S(x + 7); x += 7 + J.minGap;
+    },
+    /* 3. Gravedad invertida en cubo: el techo es el suelo; pinchos sueltos colgando */
+    () => {
+      paint(x - 4, 45);
+      grav(true, x); x += 2 + J.flipFlight + 4;
+      C(x); x += 4 + J.minGap;
+      C(x); C(x + 1); x += 2 + J.minGap;
+      blk('block_stripes', x, 8, 3, 1); C(x + 6); x += 6 + J.minGap;
+      grav(false, x); x += 2 + J.flipFlight + 4;
+    },
+    /* 4. Orbes verde y azul y pad azul: cambian la gravedad en pleno vuelo, sin pinchos bajo el arco */
+    () => {
+      S(x); x += 1 + J.minGap;
+      o.push(['orb_green', x, 2, 0]); x += 2 + J.flipFlight + 6;
+      C(x); C(x + 1); x += 2 + J.minGap;
+      o.push(['orb_blue', x, 6, 0]); x += 2 + J.flipFlight + 6;
+      paint(x - 4, 320);
+      S2(x); x += 2 + J.minGap;
+      o.push(['pad_blue', x, 0, 0]); x += 2 + J.flipFlight + 6;
+      C(x); x += 1 + J.minGap;
+      grav(false, x); x += 2 + J.flipFlight + 6;
+    },
+    /* 5. Nave con gravedad cambiante: pasillo de 7 de alto, los controles se invierten al cruzar el portal */
+    () => {
+      k.portal('ship', x); x += 8;
+      x = k.corridor(x, [[0, 4], [10, 4], [18, 5.5], [30, 5.5]], 7) + 2;
+      grav(true, x); x += 4;
+      x = k.corridor(x, [[0, 5.5], [10, 5.5], [18, 3.5], [30, 3.5]], 7) + 2;
+      grav(false, x); x += 4;
+      x = k.corridor(x, [[0, 3.5], [8, 3.5], [16, 5], [28, 5]], 7) + 8;
+    },
+    /* 6. UFO con portal de gravedad */
+    () => {
+      paint(x - 4, 210);
+      k.portal('ufo', x); x += 16;
+      for (const [lo, hi] of [[1, 8], [2, 9], [0, 7]]) { gate(x, lo, hi); x += 14; }
+      grav(true, x); x += 14;
+      for (const [lo, hi] of [[1, 8], [0, 7], [2, 9]]) { gate(x, lo, hi); x += 14; }
+      grav(false, x); x += 12;
+    },
+    /* 7. Ball con portales de gravedad */
+    () => {
+      k.portal('ball', x); x += 14;
+      S(x); C(x + 14); x += 28;
+      grav(true, x); x += 14;
+      C(x); S(x + 14); x += 28;
+      grav(false, x); x += 14;
+      S(x); x += 16;
+    },
+    /* 8. Final: alfombras largas con orbe, una tras otra, y cierre con pad */
+    () => {
+      paint(x - 6, 15);
+      k.portal('cube', x); x += 14;
+      o.push(['pad_yellow', x, 0, 0]); S2(x + 1); x += Math.ceil(J.padLanding.yellow) + J.minGap;
+      x = orbCarpet(x, 5, 'yellow') + J.minGap + 4;
+      x = orbCarpet(x, 6, 'yellow') + J.minGap + 4;
+      blk('block_crystal', x, 0, 3, 1); S(x + 8); x += 8 + J.minGap;
+    },
+  ];
+  const last = stop === undefined ? sections.length : stop;
+  for (let i = 0; i < last; i++) sections[i]();
+  x += 10;
+  const endX = x;
+  o.push(['end', endX, 0, 0]);
+  /* Decoración: animada, estática y bloques decorativos opacos y transparentes */
+  k.scatter(6, endX, [['adeco_gear', 40, 3, 7], ['adeco_pulse', 46, 2, 6], ['adeco_arrows', 34, 1, 8], ['adeco_spark', 30, 2, 7], ['adeco_wave', 52, 1, 8], ['adeco_eq', 44, 0, 1], ['adeco_orbit', 56, 2, 6],
+    ['sdeco_crystal', 40, 0, 1], ['sdeco_skyline', 60, 0, 1], ['sdeco_pillar', 64, 0, 1], ['sdeco_cross', 50, 2, 6], ['sdeco_hex', 54, 2, 6], ['sdeco_diamond', 28, 1, 8], ['sdeco_stairs', 70, 0, 1],
+    ['dblock_plain', 70, 1, 6], ['dblock_frame', 76, 1, 6], ['dblock_grid', 82, 1, 6], ['dblock_dots', 88, 1, 6],
+    ['gblock_plain', 60, 1, 7], ['gblock_frame', 66, 1, 7], ['gblock_grid', 72, 1, 7], ['gblock_dots', 78, 1, 7]]);
+  return { format: 1, id: 'gravity-rush', name: 'Gravity rush', mode: 'cube', hue: 200, style: 'circuit', diff: 'normal', speed: 'normal', desc: 'Portales de gravedad, orbes y pads con saltos medidos: el suelo cambia de lado y hay que pulsar en el aire.', objs: o };
 };
 
 if (typeof module !== 'undefined') module.exports = { LevelKit, OfficialLevels };
@@ -2075,7 +2304,10 @@ class Renderer {
     const c = this.ctx, s = v.s, d = o.def, lw = Math.max(1, 1.5 * s);
     const x = this.X(v, o.x * U), y = this.Y(v, (o.y + d.h) * U), w = d.w * U * s, h = d.h * U * s;
     switch (d.kind) {
+      case 'orb': this.orb(o, x, y, w, h, s); break;
+      case 'pad': this.pad(o, x, y, w, h, s); break;
       case 'solid':
+        if (o.type !== 'block') { this.solidVariant(o.type, x, y, w, h, th, s, lw); break; }
         c.fillStyle = 'rgba(4,8,26,0.93)'; c.fillRect(x, y, w, h);
         c.strokeStyle = th.edge; c.lineWidth = lw; c.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw);
         c.globalAlpha = (0.35) * this.am; c.strokeRect(x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6); c.globalAlpha = this.am;
@@ -2188,7 +2420,7 @@ class Renderer {
   hitboxes(v, level, sim) {
     const c = this.ctx, vw = this.w / v.s;
     c.lineWidth = Math.max(1, v.s);
-    const col = { solid: '#4aa3ff', hazard: '#ff3b3b', portal: '#6dff6d' };
+    const col = { solid: '#4aa3ff', hazard: '#ff3b3b', portal: '#6dff6d', orb: '#ffd800', pad: '#ff9f2e' };
     for (const o of level.sorted) {
       if (!o.rects.length || o.x * U > v.x + vw + U) continue;
       if (o.x * U + o.def.w * U < v.x - U) continue;
@@ -2622,7 +2854,14 @@ Object.assign(Renderer.prototype, {
     c.restore();
   },
   player(v, x, y, rot, mode, icon, an) {
-    const cx = this.X(v, x + 15), cy = this.Y(v, y + 15), size = 30 * v.s;
+    const cx = this.X(v, x + 15), cy = this.Y(v, y + 15), size = 30 * v.s, c = this.ctx;
+    /* Gravedad invertida: el vehículo se dibuja espejado (ball y spider ya se orientan con su dirección) */
+    const flip = an && an.gs < 0 && mode !== 'ball' && mode !== 'spider';
+    if (flip) { c.save(); c.translate(cx, cy); c.scale(1, -1); c.translate(-cx, -cy); }
+    this.vehicle(cx, cy, size, rot, mode, icon, an);
+    if (flip) c.restore();
+  },
+  vehicle(cx, cy, size, rot, mode, icon, an) {
     if (mode === 'ship') this.ship(cx, cy, size, rot, icon, an);
     else if (mode === 'ufo') this.ufo(cx, cy, size, rot, icon, an);
     else if (mode === 'wave') this.wave(cx, cy, size, rot, icon, an);
@@ -2903,6 +3142,182 @@ Object.assign(Renderer.prototype, {
       c.restore();
     },
   });
+})();
+
+'use strict';
+/* ============================================================
+   Renderer v4: orbes, pads, portales de gravedad, bloques sólidos
+   con otros diseños y decoración nueva (animada, estática y bloques
+   decorativos opacos y transparentes). Solo dibuja; no toca la física.
+   ============================================================ */
+const ORB_COLORS = { yellow: '#ffd800', pink: '#ff6fd0', red: '#ff3b3b', blue: '#2fa8ff', green: '#4dff6d' };
+const PAD_COLORS = { yellow: '#ffd800', pink: '#ff6fd0', red: '#ff3b3b', blue: '#2fa8ff' };
+
+(() => {
+  const P = Renderer.prototype;
+  const TAU = Math.PI * 2;
+  /* alpha de dibujo: multiplica el alpha global del objeto (grupos con Alpha) */
+  const A = (r, a) => { r.ctx.globalAlpha = a * r.am; };
+
+  /* ----- Bloques sólidos con otros diseños ----- */
+  Object.assign(P, {
+    solidVariant(type, x, y, w, h, th, s, lw) {
+      const c = this.ctx;
+      c.fillStyle = 'rgba(4,8,26,0.93)'; c.fillRect(x, y, w, h);
+      c.strokeStyle = th.edge; c.fillStyle = th.edge; c.lineWidth = lw;
+      c.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw);
+      const k = type.slice(6);
+      c.save(); c.beginPath(); c.rect(x + lw, y + lw, w - 2 * lw, h - 2 * lw); c.clip();
+      switch (k) {
+        case 'glow':
+          for (let i = 1; i <= 3; i++) { A(this, 0.5 - i * 0.12); c.strokeRect(x + w * 0.1 * i + lw, y + h * 0.1 * i + lw, w - w * 0.2 * i - 2 * lw, h - h * 0.2 * i - 2 * lw); }
+          A(this, 0.3); c.fillRect(x + w * 0.38, y + h * 0.38, w * 0.24, h * 0.24);
+          break;
+        case 'stripes':
+          A(this, 0.4); c.lineWidth = Math.max(1, w * 0.09);
+          for (let i = -2; i < 6; i++) { c.beginPath(); c.moveTo(x + i * w * 0.28, y + h); c.lineTo(x + i * w * 0.28 + w, y); c.stroke(); }
+          break;
+        case 'circuit':
+          A(this, 0.55); c.lineWidth = Math.max(1, w * 0.04);
+          c.beginPath(); c.moveTo(x, y + h * 0.3); c.lineTo(x + w * 0.5, y + h * 0.3); c.lineTo(x + w * 0.5, y + h * 0.7); c.lineTo(x + w, y + h * 0.7); c.moveTo(x + w * 0.2, y + h); c.lineTo(x + w * 0.2, y + h * 0.55); c.stroke();
+          for (const [dx, dy] of [[0.5, 0.3], [0.5, 0.7], [0.2, 0.55]]) { c.beginPath(); c.arc(x + w * dx, y + h * dy, w * 0.07, 0, TAU); c.fill(); }
+          break;
+        case 'brick':
+          A(this, 0.5); c.lineWidth = Math.max(1, w * 0.04);
+          c.beginPath(); c.moveTo(x, y + h * 0.5); c.lineTo(x + w, y + h * 0.5);
+          c.moveTo(x + w * 0.5, y); c.lineTo(x + w * 0.5, y + h * 0.5);
+          c.moveTo(x + w * 0.25, y + h * 0.5); c.lineTo(x + w * 0.25, y + h);
+          c.moveTo(x + w * 0.75, y + h * 0.5); c.lineTo(x + w * 0.75, y + h); c.stroke();
+          break;
+        case 'tech': {
+          A(this, 0.6); c.lineWidth = Math.max(1.5, w * 0.06);
+          const m = w * 0.16, l = w * 0.22;
+          for (const [px, py, sx, sy] of [[x + m, y + m, 1, 1], [x + w - m, y + m, -1, 1], [x + m, y + h - m, 1, -1], [x + w - m, y + h - m, -1, -1]]) {
+            c.beginPath(); c.moveTo(px + sx * l, py); c.lineTo(px, py); c.lineTo(px, py + sy * l); c.stroke();
+          }
+          A(this, 0.35); c.beginPath(); c.arc(x + w / 2, y + h / 2, w * 0.14, 0, TAU); c.fill();
+          break;
+        }
+        default: /* crystal */
+          A(this, 0.5); c.lineWidth = Math.max(1, w * 0.04);
+          c.beginPath(); c.moveTo(x + w / 2, y); c.lineTo(x + w, y + h / 2); c.lineTo(x + w / 2, y + h); c.lineTo(x, y + h / 2); c.closePath(); c.stroke();
+          A(this, 0.25); c.beginPath(); c.moveTo(x + w / 2, y); c.lineTo(x + w * 0.62, y + h / 2); c.lineTo(x + w / 2, y + h); c.lineTo(x + w * 0.38, y + h / 2); c.closePath(); c.fill();
+      }
+      c.restore();
+      A(this, 1);
+    },
+
+    /* ----- Orbes ----- */
+    orb(o, x, y, w, h, s) {
+      const c = this.ctx, col = ORB_COLORS[o.def.orb], t = this.time, cx = x + w / 2, cy = y + h / 2, r = w * 0.27;
+      const ph = (o.x * 0.37 + o.y * 0.51) % 1;
+      c.save();
+      A(this, 0.18); c.fillStyle = col; c.beginPath(); c.arc(cx, cy, w * 0.52, 0, TAU); c.fill();
+      const k = (t * 1.4 + ph) % 1;
+      A(this, 0.7 * (1 - k)); c.strokeStyle = col; c.lineWidth = Math.max(1, 3 * s); c.beginPath(); c.arc(cx, cy, r + k * w * 0.28, 0, TAU); c.stroke();
+      A(this, 1);
+      c.beginPath(); c.arc(cx, cy, r * (1 + 0.05 * Math.sin(t * 6 + ph * 6)), 0, TAU); c.fillStyle = col; c.fill();
+      c.lineWidth = Math.max(1.2, 2 * s); c.strokeStyle = '#fff'; c.stroke();
+      c.fillStyle = 'rgba(255,255,255,0.85)'; c.beginPath(); c.arc(cx, cy, r * 0.42, 0, TAU); c.fill();
+      if (o.def.orb === 'blue' || o.def.orb === 'green') {
+        c.strokeStyle = o.def.orb === 'blue' ? '#0b4d80' : '#116b26'; c.lineWidth = Math.max(1, 1.6 * s);
+        c.beginPath(); c.moveTo(cx - r * 0.25, cy - r * 0.15); c.lineTo(cx - r * 0.25, cy + r * 0.2); c.lineTo(cx - r * 0.45, cy);
+        c.moveTo(cx + r * 0.25, cy + r * 0.15); c.lineTo(cx + r * 0.25, cy - r * 0.2); c.lineTo(cx + r * 0.45, cy); c.stroke();
+      }
+      c.restore();
+    },
+
+    /* ----- Pads ----- */
+    pad(o, x, y, w, h, s) {
+      const c = this.ctx, col = PAD_COLORS[o.def.pad], t = this.time;
+      c.save();
+      if (o.rot === 180) { c.translate(0, y + h / 2); c.scale(1, -1); c.translate(0, -(y + h / 2)); }
+      const bx = x + w / 2, by = y + h, pw = w * 0.42;
+      A(this, 0.22); c.fillStyle = col; c.beginPath(); c.ellipse(bx, by, pw * 1.5, h * 0.42, 0, Math.PI, 0); c.fill();
+      A(this, 1);
+      c.beginPath(); c.ellipse(bx, by, pw, h * 0.2, 0, Math.PI, 0); c.closePath();
+      c.fillStyle = col; c.fill(); c.strokeStyle = '#000'; c.lineWidth = Math.max(1, 1.6 * s); c.stroke();
+      const k = (t * 2) % 1;
+      c.strokeStyle = col; c.lineWidth = Math.max(1, 2.2 * s); c.lineJoin = 'round';
+      for (let i = 0; i < 2; i++) {
+        const f = (k + i * 0.5) % 1;
+        A(this, 0.8 * (1 - f));
+        const yy = by - h * 0.22 - f * h * 0.5;
+        c.beginPath(); c.moveTo(bx - pw * 0.5, yy + h * 0.12); c.lineTo(bx, yy - h * 0.05); c.lineTo(bx + pw * 0.5, yy + h * 0.12); c.stroke();
+      }
+      c.restore();
+      A(this, 1);
+    },
+  });
+
+  /* ----- Portales de gravedad ----- */
+  const basePortal = P.portal;
+  P.portal = function (o, x, y, w, h, s) {
+    const d = o.def;
+    if (!d.grav) return basePortal.call(this, o, x, y, w, h, s);
+    const c = this.ctx, t = this.time, cx = x + w / 2, cy = y + h / 2, col = d.grav < 0 ? '#ffd800' : '#2fa8ff';
+    c.save();
+    A(this, 0.16); c.fillStyle = col; c.beginPath(); c.ellipse(cx, cy, w * 0.52 * (1 + 0.05 * Math.sin(t * 5)), h / 2, 0, 0, TAU); c.fill();
+    A(this, 0.35); c.strokeStyle = col; c.lineWidth = 9 * s; c.beginPath(); c.ellipse(cx, cy, w * 0.42, h / 2 - 4 * s, 0, 0, TAU); c.stroke();
+    A(this, 1); c.lineWidth = 3.5 * s; c.stroke();
+    c.lineWidth = 2.6 * s; c.lineJoin = 'round'; c.lineCap = 'round';
+    const dir = d.grav < 0 ? -1 : 1;
+    for (let i = 0; i < 3; i++) {
+      const f = ((t * 1.2 + i / 3) % 1), yy = cy - dir * (h * 0.28) + dir * f * h * 0.56;
+      A(this, Math.sin(f * Math.PI));
+      c.beginPath(); c.moveTo(cx - w * 0.3, yy - dir * h * 0.05); c.lineTo(cx, yy + dir * h * 0.05); c.lineTo(cx + w * 0.3, yy - dir * h * 0.05); c.stroke();
+    }
+    c.restore(); A(this, 1);
+  };
+
+  /* ----- Decoración nueva ----- */
+  const gearPath = (c, r, teeth) => {
+    c.beginPath();
+    for (let i = 0; i < teeth * 2; i++) { const a = i * Math.PI / teeth, rr = i % 2 ? r * 0.8 : r; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+    c.closePath();
+  };
+  const hexPath = (c, r) => { c.beginPath(); for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3 + Math.PI / 6; c.lineTo(Math.cos(a) * r, Math.sin(a) * r); } c.closePath(); };
+  const DECO = {
+    adeco_gear(r, c, x, y, w, h, th, s, ph, t) { A(r, 0.35); c.translate(x + w / 2, y + h / 2); c.rotate(t * 0.8 * (ph > 0.5 ? 1 : -1)); const R = Math.min(w, h) * 0.45; gearPath(c, R, 8); c.stroke(); c.beginPath(); c.arc(0, 0, R * 0.35, 0, TAU); c.stroke(); c.fillRect(-R * 0.08, -R * 0.08, R * 0.16, R * 0.16); },
+    adeco_pulse(r, c, x, y, w, h, th, s, ph, t) { const R = Math.min(w, h) * 0.5; for (let i = 0; i < 3; i++) { const k = (t * 0.7 + i / 3) % 1; A(r, 0.4 * (1 - k)); c.beginPath(); c.arc(x + w / 2, y + h / 2, R * k, 0, TAU); c.stroke(); } A(r, 0.45); c.beginPath(); c.arc(x + w / 2, y + h / 2, R * 0.12, 0, TAU); c.fill(); },
+    adeco_arrows(r, c, x, y, w, h, th, s, ph, t) { const k = (t * 0.6) % 1; for (let i = 0; i < 4; i++) { const f = (k + i / 4) % 1; A(r, 0.45 * Math.sin(f * Math.PI)); const px = x + f * w; c.beginPath(); c.moveTo(px - w * 0.05, y + h * 0.15); c.lineTo(px + w * 0.05, y + h / 2); c.lineTo(px - w * 0.05, y + h * 0.85); c.stroke(); } },
+    adeco_spark(r, c, x, y, w, h, th, s, ph, t) { for (let i = 0; i < 7; i++) { const f = hash1(ph * 9 + i * 3.1), f2 = hash1(ph * 5 + i * 7.7); A(r, 0.15 + 0.5 * Math.abs(Math.sin(t * (1 + f) + i))); r.star4(x + f * w, y + f2 * h, (3 + 5 * f2) * s); } },
+    adeco_wave(r, c, x, y, w, h, th, s, ph, t) { A(r, 0.45); c.beginPath(); for (let i = 0; i <= 24; i++) { const px = x + w * i / 24, py = y + h / 2 + Math.sin(i * 0.8 + t * 3) * h * 0.35; if (i) c.lineTo(px, py); else c.moveTo(px, py); } c.stroke(); },
+    adeco_eq(r, c, x, y, w, h, th, s, ph, t) { A(r, 0.4); const n = 6, bw = w / (n * 1.5); for (let i = 0; i < n; i++) { const bh = h * (0.2 + 0.8 * Math.abs(Math.sin(t * 3 + i * 1.3 + ph))); c.fillRect(x + i * bw * 1.5, y + h - bh, bw, bh); } },
+    adeco_orbit(r, c, x, y, w, h, th, s, ph, t) { const cx = x + w / 2, cy = y + h / 2, R = Math.min(w, h) * 0.42; A(r, 0.3); c.beginPath(); c.ellipse(cx, cy, R, R * 0.4, 0.5, 0, TAU); c.stroke(); c.beginPath(); c.ellipse(cx, cy, R, R * 0.4, -0.5, 0, TAU); c.stroke(); A(r, 0.5); c.beginPath(); c.arc(cx, cy, R * 0.14, 0, TAU); c.fill(); for (let i = 0; i < 3; i++) { const a = t * 1.4 + i * TAU / 3; c.beginPath(); c.arc(cx + Math.cos(a) * R * 0.95, cy + Math.sin(a) * R * 0.38, R * 0.08, 0, TAU); c.fill(); } },
+    sdeco_crystal(r, c, x, y, w, h) { A(r, 0.3); c.beginPath(); c.moveTo(x + w / 2, y); c.lineTo(x + w * 0.9, y + h * 0.3); c.lineTo(x + w * 0.7, y + h); c.lineTo(x + w * 0.3, y + h); c.lineTo(x + w * 0.1, y + h * 0.3); c.closePath(); c.stroke(); A(r, 0.2); c.beginPath(); c.moveTo(x + w / 2, y); c.lineTo(x + w * 0.35, y + h * 0.3); c.lineTo(x + w * 0.45, y + h); c.lineTo(x + w * 0.7, y + h); c.lineTo(x + w * 0.9, y + h * 0.3); c.closePath(); c.fill(); },
+    sdeco_skyline(r, c, x, y, w, h, th, s, ph) { A(r, 0.28); for (let i = 0; i < 6; i++) { const bh = h * (0.3 + 0.7 * hash1(ph * 3 + i * 5.3)); c.fillRect(x + i * w / 6 + 1, y + h - bh, w / 6 - 2, bh); } A(r, 0.4); c.strokeRect(x, y + h - 1, w, 1); },
+    sdeco_pillar(r, c, x, y, w, h) { A(r, 0.3); c.fillRect(x + w * 0.25, y + h * 0.06, w * 0.5, h * 0.88); A(r, 0.45); c.fillRect(x + w * 0.1, y, w * 0.8, h * 0.06); c.fillRect(x + w * 0.1, y + h * 0.94, w * 0.8, h * 0.06); for (let i = 1; i < 5; i++) c.strokeRect(x + w * 0.25, y + h * i / 5, w * 0.5, 1); },
+    sdeco_cross(r, c, x, y, w, h) { A(r, 0.35); c.strokeRect(x + w * 0.38, y + h * 0.1, w * 0.24, h * 0.8); c.strokeRect(x + w * 0.1, y + h * 0.38, w * 0.8, h * 0.24); },
+    sdeco_hex(r, c, x, y, w, h) { c.translate(x + w / 2, y + h / 2); A(r, 0.38); hexPath(c, Math.min(w, h) * 0.46); c.stroke(); A(r, 0.22); hexPath(c, Math.min(w, h) * 0.26); c.stroke(); c.fill(); },
+    sdeco_diamond(r, c, x, y, w, h) { A(r, 0.38); c.beginPath(); c.moveTo(x + w / 2, y + h * 0.08); c.lineTo(x + w * 0.92, y + h / 2); c.lineTo(x + w / 2, y + h * 0.92); c.lineTo(x + w * 0.08, y + h / 2); c.closePath(); c.stroke(); },
+    sdeco_stairs(r, c, x, y, w, h) { A(r, 0.32); for (let i = 0; i < 3; i++) { c.strokeRect(x + i * w / 3, y + h - (i + 1) * h / 3, w / 3, (i + 1) * h / 3); } A(r, 0.15); for (let i = 0; i < 3; i++) c.fillRect(x + i * w / 3, y + h - (i + 1) * h / 3, w / 3, (i + 1) * h / 3); },
+  };
+  /* Bloques cuadrados no sólidos: opacos (dblock) y translúcidos (gblock) con 4 diseños */
+  const blockDeco = (translucent) => (r, c, x, y, w, h, th, s, ph, t, kind) => {
+    const fa = translucent ? 0.22 : 0.9, la = translucent ? 0.5 : 0.7, lw = Math.max(1, 1.5 * s);
+    A(r, fa); c.fillStyle = kind === 'plain' ? th.edge : 'rgba(6,12,38,1)'; if (kind === 'plain') { A(r, translucent ? 0.2 : 0.35); } c.fillRect(x, y, w, h);
+    A(r, la); c.lineWidth = lw; c.strokeStyle = th.edge; c.fillStyle = th.edge;
+    c.strokeRect(x + lw / 2, y + lw / 2, w - lw, h - lw);
+    if (kind === 'frame') c.strokeRect(x + w * 0.22, y + h * 0.22, w * 0.56, h * 0.56);
+    else if (kind === 'grid') { c.beginPath(); c.moveTo(x + w / 2, y); c.lineTo(x + w / 2, y + h); c.moveTo(x, y + h / 2); c.lineTo(x + w, y + h / 2); c.stroke(); }
+    else if (kind === 'dots') for (const dx of [0.28, 0.72]) for (const dy of [0.28, 0.72]) { c.beginPath(); c.arc(x + w * dx, y + h * dy, w * 0.07, 0, TAU); c.fill(); }
+  };
+  for (const k of ['plain', 'frame', 'grid', 'dots']) {
+    DECO['dblock_' + k] = (r, c, x, y, w, h, th, s, ph, t) => blockDeco(false)(r, c, x, y, w, h, th, s, ph, t, k);
+    DECO['gblock_' + k] = (r, c, x, y, w, h, th, s, ph, t) => blockDeco(true)(r, c, x, y, w, h, th, s, ph, t, k);
+  }
+
+  const baseDeco = P.deco;
+  P.deco = function (type, x, y, w, h, rot, th, s, ph) {
+    const f = DECO[type];
+    if (!f) return baseDeco.call(this, type, x, y, w, h, rot, th, s, ph);
+    const c = this.ctx;
+    c.save(); c.strokeStyle = th.edge; c.fillStyle = th.edge; c.lineWidth = Math.max(1, 2 * s); c.lineJoin = 'round'; c.lineCap = 'round';
+    f(this, c, x, y, w, h, th, s, hash1(ph || 0), this.time);
+    c.restore();
+    A(this, 1);
+  };
 })();
 
 'use strict';
@@ -3796,7 +4211,7 @@ class GameEngine {
     this.menuT = 0;
     this.last = performance.now();
 
-    const raw = [Levels.stereoMadness(), OfficialLevels.ufo(), OfficialLevels.wave(), OfficialLevels.ball(), OfficialLevels.demon(), OfficialLevels.changes(), OfficialLevels.spider()];
+    const raw = [Levels.stereoMadness(), OfficialLevels.ufo(), OfficialLevels.wave(), OfficialLevels.ball(), OfficialLevels.demon(), OfficialLevels.changes(), OfficialLevels.spider(), OfficialLevels.gravity()];
     this.officials = raw.map((r) => {
       const v = LevelManager.validate(r);
       if (!v.ok) throw new Error('Nivel oficial inválido: ' + v.error);
@@ -3990,13 +4405,15 @@ class GameEngine {
     this.ui.hud(true);
     $('#hud-flag').hidden = !SaveManager.physicsModified();
     this.particles.clear();
-    this.camera.snap(sim.player.x, sim.player.y, sim.player.mode, this.renderer.viewWidth());
+    this.camera.snap(sim.player.x, sim.player.y, this.camMode(sim.player), this.renderer.viewWidth());
     this.play.ceilVis = isFinite(sim.bounds.ceil) ? sim.bounds.ceil : 600;
     this.audio.unlock(); this.audio.startMusic();
     if (this.play.record) SaveManager.addAttempt(ctx.id);
     this.updateHud();
     this.focusCanvas();
   }
+  /* El cubo con gravedad invertida vive bajo techo: la cámara se queda fija como en los modos de techo. */
+  camMode(p) { return p.mode === 'cube' && p.gs < 0 ? 'ship' : p.mode; }
   testLevel(data) { this.startPlay(data, { source: 'editor', id: null }); }
   restart() {
     const pl = this.play; if (!pl) return;
@@ -4006,7 +4423,7 @@ class GameEngine {
     pl.ceilVis = isFinite(pl.sim.bounds.ceil) ? pl.sim.bounds.ceil : 600;
     ['death', 'win'].forEach((n) => this.ui.overlay(n, false));
     this.particles.clear();
-    this.camera.snap(pl.sim.player.x, pl.sim.player.y, pl.sim.player.mode, this.renderer.viewWidth());
+    this.camera.snap(pl.sim.player.x, pl.sim.player.y, this.camMode(pl.sim.player), this.renderer.viewWidth());
     this.audio.startMusic();
     if (pl.record) SaveManager.addAttempt(pl.id);
     this.updateHud();
@@ -4047,6 +4464,11 @@ class GameEngine {
       } else if (ev.type === 'portal') {
         this.audio.portal(); this.particles.portal(ix + 15, iy + 15, MODE_COLORS[ev.mode]);
         pl.trail.length = 0;
+      } else if (ev.type === 'gravity') {
+        this.audio.portal(); pl.flipT = 1; this.particles.portal(ix + 15, iy + 15, ev.gs < 0 ? '#ffd800' : '#2fa8ff');
+      } else if (ev.type === 'boost') {
+        this.audio.jump();
+        this.particles.burst(ix + 15, iy + 15, 8, { speed: 150, life: 0.35, size: 4, colors: [(ev.pad ? PAD_COLORS : ORB_COLORS)[ev.color], '#fff'], force: true });
       } else if (ev.type === 'speed') this.audio.portal();
       else if (ev.type === 'death') {
         pl.dead = true; pl.deadT = 0;
@@ -4122,7 +4544,7 @@ class GameEngine {
     const alpha = pl.dead || pl.won ? 1 : pl.stepper.alpha;
     const ix = p.px + (p.x - p.px) * alpha, iy = p.py + (p.y - p.py) * alpha, irot = p.prot + (p.rot - p.prot) * alpha;
     const fdt = pl.paused ? 0 : dt;
-    this.camera.update(ix, iy, p.mode, r.viewWidth(), fdt);
+    this.camera.update(ix, iy, this.camMode(p), r.viewWidth(), fdt);
     const ceilT = isFinite(sim.bounds.ceil) ? sim.bounds.ceil : 600;
     pl.ceilVis += (ceilT - pl.ceilVis) * (1 - Math.exp(-fdt * 4));
     if (!pl.paused && !pl.dead && !pl.won) this.emitEffects(pl, ix, iy, dt);
@@ -4140,7 +4562,7 @@ class GameEngine {
     if (pl.ceilVis < 590) r.ceiling(v, th, pl.ceilVis);
     r.objects(v, lv, th);
     if (p.mode === 'wave' && p.alive) r.waveTrail(v, pl.trail, ic);
-    if (p.alive && !pl.won) r.player(v, ix, iy, irot, p.mode, ic, { held: this.input.held, vy: p.vy, flapT: pl.flapT, flipT: pl.flipT, dir: p.dir, run: p.onGround });
+    if (p.alive && !pl.won) r.player(v, ix, iy, irot, p.mode, ic, { held: this.input.held, vy: p.vy, flapT: pl.flapT, flipT: pl.flipT, dir: p.dir, run: p.onGround, gs: p.gs });
     this.particles.draw(r, v);
     if (SaveManager.data.settings.hitboxes) r.hitboxes(v, lv, sim);
     if (pl.dead && pl.deadT < 0.12) { r.ctx.fillStyle = `rgba(255,255,255,${0.5 * (1 - pl.deadT / 0.12)})`; r.ctx.fillRect(0, 0, r.w, r.h); }

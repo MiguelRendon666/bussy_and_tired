@@ -419,7 +419,14 @@ Object.assign(Renderer.prototype, {
     c.restore();
   },
   player(v, x, y, rot, mode, icon, an) {
-    const cx = this.X(v, x + 15), cy = this.Y(v, y + 15), size = 30 * v.s;
+    const cx = this.X(v, x + 15), cy = this.Y(v, y + 15), size = 30 * v.s, c = this.ctx;
+    /* Gravedad invertida: el vehículo se dibuja espejado (ball y spider ya se orientan con su dirección) */
+    const flip = an && an.gs < 0 && mode !== 'ball' && mode !== 'spider';
+    if (flip) { c.save(); c.translate(cx, cy); c.scale(1, -1); c.translate(-cx, -cy); }
+    this.vehicle(cx, cy, size, rot, mode, icon, an);
+    if (flip) c.restore();
+  },
+  vehicle(cx, cy, size, rot, mode, icon, an) {
     if (mode === 'ship') this.ship(cx, cy, size, rot, icon, an);
     else if (mode === 'ufo') this.ufo(cx, cy, size, rot, icon, an);
     else if (mode === 'wave') this.wave(cx, cy, size, rot, icon, an);

@@ -89,6 +89,39 @@ const run = (sim, n, held) => { for (let i = 0; i < n; i++) sim.step(typeof held
   const v = LevelManager.validate({ mode: 'cube', objs: [['start', 0, 0, 0], ['trig_alpha', 5, 5, 0, { g: 0, a: 2, d: 1 }]] });
   ok(!v.ok, 'TRIGGER: validación rechaza parámetros fuera de rango');
 }
+/* GRAVEDAD, ORBES Y PADS */
+{
+  const G = (up, x) => [0, 3, 6].map((y) => [up ? 'portal_grav_up' : 'portal_grav_down', x, y, 0]);
+  const c = mk('cube', G(true, 10)); run(c, 400, false);
+  ok(c.player.gs === -1 && c.player.alive && Math.abs(c.player.y - 240) < 1e-6 && c.player.onGround, 'GRAVEDAD: el cubo invertido cae al techo y se posa (y=' + c.player.y.toFixed(1) + ')');
+  c.prevHeld = false; let mn = c.player.y; run(c, 3, true); for (let i = 0; i < 100; i++) { c.step(false); mn = Math.min(mn, c.player.y); }
+  ok(c.player.alive && c.player.y - mn > 55 && c.player.y - mn < 70, 'GRAVEDAD: desde el techo salta hacia abajo igual que desde el suelo (' + (c.player.y - mn).toFixed(1) + ')');
+  const back = mk('cube', [...G(true, 3), ...G(false, 20)]); run(back, 500, false);
+  ok(back.player.gs === 1 && back.player.alive && back.player.y < 241 && back.bounds.ceil === Infinity, 'GRAVEDAD: el portal normal restablece suelo y techo');
+  const sh = mk('ship', G(true, 5)); run(sh, 500, false);
+  ok(sh.player.alive && Math.abs(sh.player.y - 240) < 1e-6, 'GRAVEDAD: la nave invertida cae hacia el techo');
+  const sh2 = mk('ship', G(true, 5)); run(sh2, 400, false); run(sh2, 120, true);
+  ok(sh2.player.alive && sh2.player.y < 200, 'GRAVEDAD: la nave invertida baja al mantener pulsado');
+  const bl = mk('ball', G(true, 5)); run(bl, 300, false);
+  ok(bl.player.dir > 0 && bl.player.alive, 'GRAVEDAD: la ball pasa a gravedad hacia arriba');
+  const apex = (objs, f) => { const q = mk('cube', objs); q.prevHeld = false; let m = 0; for (let i = 0; i < 260; i++) { q.step(f(i)); m = Math.max(m, q.player.y); } return { m, q }; };
+  const press = (i) => (i >= 100 && i < 104) || (i >= 112 && i < 116);
+  const none = apex([], (i) => i >= 100 && i < 104).m;
+  const y = apex([['orb_yellow', 5, 2, 0]], press);
+  ok(y.m > none + 15, 'ORBE: amarillo da un segundo impulso con otra pulsación (' + y.m.toFixed(0) + ' > ' + none.toFixed(0) + ')');
+  const noPress = apex([['orb_yellow', 5, 2, 0]], (i) => i >= 100 && i < 104).m;
+  ok(Math.abs(noPress - none) < 1e-6, 'ORBE: la pulsación que salta desde el suelo no activa el orbe');
+  const g = apex([['orb_green', 5, 2, 0]], press);
+  ok(g.q.player.gs === -1, 'ORBE: verde invierte la gravedad');
+  const r = apex([['orb_red', 5, 2, 0]], press).m, p = apex([['orb_pink', 5, 2, 0]], press).m;
+  ok(r > y.m && p < y.m, 'ORBE: rojo > amarillo > rosa (' + r.toFixed(0) + ' > ' + y.m.toFixed(0) + ' > ' + p.toFixed(0) + ')');
+  const pad = (n) => apex([[n, 4, 0, 0]], () => false).m;
+  ok(pad('pad_red') > pad('pad_yellow') && pad('pad_yellow') > pad('pad_pink') && pad('pad_pink') > 40, 'PAD: rojo > amarillo > rosa, sin pulsar (' + pad('pad_red').toFixed(0) + ', ' + pad('pad_yellow').toFixed(0) + ', ' + pad('pad_pink').toFixed(0) + ')');
+  const bp = apex([['pad_blue', 4, 0, 0]], () => false);
+  ok(bp.q.player.gs === -1, 'PAD: azul invierte la gravedad');
+  const sv = y.q.save(); run(y.q, 30, false); y.q.load(sv);
+  ok(y.q.used.size === sv.u.size && y.q.player.gs === sv.gs, 'ORBE: save/load restaura orbes usados y gravedad');
+}
 /* Portales entre los cinco modos */
 {
   const objs = [];

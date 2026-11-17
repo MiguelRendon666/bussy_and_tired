@@ -274,7 +274,7 @@ class GameEngine {
     this.menuT = 0;
     this.last = performance.now();
 
-    const raw = [Levels.stereoMadness(), OfficialLevels.ufo(), OfficialLevels.wave(), OfficialLevels.ball(), OfficialLevels.demon(), OfficialLevels.changes(), OfficialLevels.spider()];
+    const raw = [Levels.stereoMadness(), OfficialLevels.ufo(), OfficialLevels.wave(), OfficialLevels.ball(), OfficialLevels.demon(), OfficialLevels.changes(), OfficialLevels.spider(), OfficialLevels.gravity()];
     this.officials = raw.map((r) => {
       const v = LevelManager.validate(r);
       if (!v.ok) throw new Error('Nivel oficial inválido: ' + v.error);
@@ -468,13 +468,15 @@ class GameEngine {
     this.ui.hud(true);
     $('#hud-flag').hidden = !SaveManager.physicsModified();
     this.particles.clear();
-    this.camera.snap(sim.player.x, sim.player.y, sim.player.mode, this.renderer.viewWidth());
+    this.camera.snap(sim.player.x, sim.player.y, this.camMode(sim.player), this.renderer.viewWidth());
     this.play.ceilVis = isFinite(sim.bounds.ceil) ? sim.bounds.ceil : 600;
     this.audio.unlock(); this.audio.startMusic();
     if (this.play.record) SaveManager.addAttempt(ctx.id);
     this.updateHud();
     this.focusCanvas();
   }
+  /* El cubo con gravedad invertida vive bajo techo: la cámara se queda fija como en los modos de techo. */
+  camMode(p) { return p.mode === 'cube' && p.gs < 0 ? 'ship' : p.mode; }
   testLevel(data) { this.startPlay(data, { source: 'editor', id: null }); }
   restart() {
     const pl = this.play; if (!pl) return;
@@ -484,7 +486,7 @@ class GameEngine {
     pl.ceilVis = isFinite(pl.sim.bounds.ceil) ? pl.sim.bounds.ceil : 600;
     ['death', 'win'].forEach((n) => this.ui.overlay(n, false));
     this.particles.clear();
-    this.camera.snap(pl.sim.player.x, pl.sim.player.y, pl.sim.player.mode, this.renderer.viewWidth());
+    this.camera.snap(pl.sim.player.x, pl.sim.player.y, this.camMode(pl.sim.player), this.renderer.viewWidth());
     this.audio.startMusic();
     if (pl.record) SaveManager.addAttempt(pl.id);
     this.updateHud();
@@ -525,6 +527,11 @@ class GameEngine {
       } else if (ev.type === 'portal') {
         this.audio.portal(); this.particles.portal(ix + 15, iy + 15, MODE_COLORS[ev.mode]);
         pl.trail.length = 0;
+      } else if (ev.type === 'gravity') {
+        this.audio.portal(); pl.flipT = 1; this.particles.portal(ix + 15, iy + 15, ev.gs < 0 ? '#ffd800' : '#2fa8ff');
+      } else if (ev.type === 'boost') {
+        this.audio.jump();
+        this.particles.burst(ix + 15, iy + 15, 8, { speed: 150, life: 0.35, size: 4, colors: [(ev.pad ? PAD_COLORS : ORB_COLORS)[ev.color], '#fff'], force: true });
       } else if (ev.type === 'speed') this.audio.portal();
       else if (ev.type === 'death') {
         pl.dead = true; pl.deadT = 0;
@@ -600,7 +607,7 @@ class GameEngine {
     const alpha = pl.dead || pl.won ? 1 : pl.stepper.alpha;
     const ix = p.px + (p.x - p.px) * alpha, iy = p.py + (p.y - p.py) * alpha, irot = p.prot + (p.rot - p.prot) * alpha;
     const fdt = pl.paused ? 0 : dt;
-    this.camera.update(ix, iy, p.mode, r.viewWidth(), fdt);
+    this.camera.update(ix, iy, this.camMode(p), r.viewWidth(), fdt);
     const ceilT = isFinite(sim.bounds.ceil) ? sim.bounds.ceil : 600;
     pl.ceilVis += (ceilT - pl.ceilVis) * (1 - Math.exp(-fdt * 4));
     if (!pl.paused && !pl.dead && !pl.won) this.emitEffects(pl, ix, iy, dt);
@@ -618,7 +625,7 @@ class GameEngine {
     if (pl.ceilVis < 590) r.ceiling(v, th, pl.ceilVis);
     r.objects(v, lv, th);
     if (p.mode === 'wave' && p.alive) r.waveTrail(v, pl.trail, ic);
-    if (p.alive && !pl.won) r.player(v, ix, iy, irot, p.mode, ic, { held: this.input.held, vy: p.vy, flapT: pl.flapT, flipT: pl.flipT, dir: p.dir, run: p.onGround });
+    if (p.alive && !pl.won) r.player(v, ix, iy, irot, p.mode, ic, { held: this.input.held, vy: p.vy, flapT: pl.flapT, flipT: pl.flipT, dir: p.dir, run: p.onGround, gs: p.gs });
     this.particles.draw(r, v);
     if (SaveManager.data.settings.hitboxes) r.hitboxes(v, lv, sim);
     if (pl.dead && pl.deadT < 0.12) { r.ctx.fillStyle = `rgba(255,255,255,${0.5 * (1 - pl.deadT / 0.12)})`; r.ctx.fillRect(0, 0, r.w, r.h); }

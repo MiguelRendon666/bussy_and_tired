@@ -20,7 +20,7 @@ function solve() {
       bestX = Math.max(bestX, sim.player.x);
       const sv = sim.save();
       if (sim.finished) return { ok: true };
-      const key = [sv.m, Math.round(sv.y / 4), Math.round(sv.vy / 25), sv.g, sv.d, sv.ph, Math.round(sv.bf * 20), sv.fx ? Array.from(sv.fx.off).join(',') : ''].join('|');
+      const key = [sv.m, Math.round(sv.y / 4), Math.round(sv.vy / 25), sv.g, sv.d, sv.ph, Math.round(sv.bf * 20), sv.gs, sv.u ? sv.u.size : 0, sv.fx ? Array.from(sv.fx.off).join(',') : ''].join('|');
       if (!next.has(key)) next.set(key, { s: sv });
     }
     tick++; states = [...next.values()];

@@ -1,6 +1,6 @@
 const C=require('./core.js'),L=require('./levels.js');const {Simulation,LevelManager,CFG,Levels}=C;
 const plans=JSON.parse(require('fs').readFileSync('plans.json','utf8'));
-const raws={'stereo-madness':Levels.stereoMadness(),'orbital-hop':L.OfficialLevels.ufo(),'neon-slope':L.OfficialLevels.wave(),'flip-circuit':L.OfficialLevels.ball(),'abyss-protocol':L.OfficialLevels.demon(),'changes-after-all':L.OfficialLevels.changes(),'witzy-witzy-spider':L.OfficialLevels.spider()};
+const raws={'stereo-madness':Levels.stereoMadness(),'orbital-hop':L.OfficialLevels.ufo(),'neon-slope':L.OfficialLevels.wave(),'flip-circuit':L.OfficialLevels.ball(),'abyss-protocol':L.OfficialLevels.demon(),'changes-after-all':L.OfficialLevels.changes(),'witzy-witzy-spider':L.OfficialLevels.spider(),'gravity-rush':L.OfficialLevels.gravity()};
 let bad=0;
 for(const id of Object.keys(raws)){
   const data=LevelManager.validate(raws[id]).data,plan=plans[id],res=[];

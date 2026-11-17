@@ -14,6 +14,7 @@ ${r('levels.js')}
 ${r('app1.js')}
 ${r('render2.js')}
 ${r('render3.js')}
+${r('render4.js')}
 ${r('app2.js')}
 ${r('app3.js')}
 </script>
